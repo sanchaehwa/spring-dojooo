@@ -12,7 +12,7 @@ public class SwaggerConfig {
         Info info = new Info()
                 .version("v1.0")
                 .title("Dojooo API")
-                .description("Dojooo API");
+                .description("Dojooo API 입니다");
         return new OpenAPI()
                 .info(info);
     }
