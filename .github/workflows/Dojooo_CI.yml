@@ -21,7 +21,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
             # 1. 작업 디렉토리 이동
-            cd ~/spring-dojooo/dojooo
+            cd ~/spring-dojooo/
 
             # 2. 기존 컨테이너 종료 및 삭제
             docker stop dojooo-container || true
