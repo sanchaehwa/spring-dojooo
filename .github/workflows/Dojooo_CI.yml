@@ -1,9 +1,9 @@
 name: dojooo CI/CD
 
 on:
-  pull_request_target:
+  push:
     branches:
-      - develop  # 원본 레포지토리의 develop 브랜치로 PR이 오면 실행
+      - develop
 jobs:
   deploy:
 
