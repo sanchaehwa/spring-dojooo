@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - develop
+env:
+  ACTIONS_STEP_DEBUG: true
 jobs:
   deploy:
 
@@ -17,7 +19,6 @@ jobs:
 
       - name: SSH into EC2 and Deploy
         uses: appleboy/ssh-action@v1.0.3
-        debug: true
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
