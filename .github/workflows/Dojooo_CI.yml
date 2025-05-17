@@ -1,42 +1,21 @@
 name: dojooo CI/CD
 
 on:
-  push:
+  pull_request_target:
     branches:
-      - develop
-
+      - develop  # 원본 레포지토리의 develop 브랜치로 PR이 오면 실행
 jobs:
   deploy:
+
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
-      - name: Checkout source code
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-2
-
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
-
-      - name: Build, tag, and push Docker image to ECR
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: dojooo
-          IMAGE_TAG: latest
-        run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-
-      - name: SSH to EC2 and deploy
+      - name: SSH into EC2 and Deploy
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -45,15 +24,21 @@ jobs:
           port: 22
           script: |
             # 1. ECR 로그인
-            aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com
+            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
 
             # 2. 기존 컨테이너 종료 및 이미지 삭제
             docker stop dojooo-container || true
             docker rm dojooo-container || true
-            docker rmi ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/dojooo:latest || true
+            docker rmi ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/dojooo:latest || true
+            
+            # 3. Docker 이미지 빌드
+            docker build -t dojooo-image .
 
-            # 3. 최신 이미지 Pull
+            # 4. ECR에 태그 추가 및 푸시
+            docker tag dojooo-image:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/dojooo:latest
+            docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/dojooo:latest
+
+
+            # 5. 최신 Docker 이미지 Pull 및 실행
             docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/dojooo:latest
-
-            # 4. 새 컨테이너 실행
             docker run -d --name dojooo-container -p 8080:8080 ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/dojooo:latest
