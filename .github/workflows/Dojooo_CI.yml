@@ -40,5 +40,5 @@ jobs:
 
 
             # 5. 최신 Docker 이미지 Pull 및 실행
-            docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/dojooo:latest
-            docker run -d --name dojooo-container -p 8080:8080 ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/dojooo:latest
+            docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/dojooo:latest
+            docker run -d --name dojooo-container -p 8080:8080 ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/dojooo:latest
