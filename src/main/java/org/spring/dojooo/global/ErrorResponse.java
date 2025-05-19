@@ -12,8 +12,6 @@ public class ErrorResponse {
     private int status;
     private List<FieldError> errors;
 
-    protected ErrorResponse() {
-    }
     private ErrorResponse(ErrorCode errorCode) {
         this.message = errorCode.getMessage();
         this.status = errorCode.getStatus();

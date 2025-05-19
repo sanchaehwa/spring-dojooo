@@ -1,6 +1,7 @@
 package org.spring.dojooo.global.response;
 
 import lombok.Getter;
+import org.spring.dojooo.main.users.dto.UserLoginResponse;
 
 @Getter
 public class ApiResponse<T> {
@@ -15,4 +16,7 @@ public class ApiResponse<T> {
         return new ApiResponse<>(data);
     }
 
+    public static <T> ApiResponse<T> success(T data) {
+        return new ApiResponse<>(data);
+    }
 }

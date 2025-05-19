@@ -40,4 +40,14 @@ public class RedisUtil {
     public void deleteEmailCode(String email) {
         redisTemplate.delete(email);
     }
+    public void saveRefreshToken(String username, String refreshToken) {
+        log.info("Redis 저장 시도 - user: {}. refreshToken: {}", username, refreshToken);
+        redisTemplate.opsForValue().set("refresh:" + username,refreshToken);
+    }
+    public String getRefreshToken(String username) {
+        return redisTemplate.opsForValue().get("refresh:" + username);
+    }
+    public void deleteRefreshToken(String username) {
+        redisTemplate.delete("refresh:" + username);
+    }
 }

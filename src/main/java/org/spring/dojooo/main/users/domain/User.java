@@ -7,6 +7,7 @@ import org.spring.dojooo.global.ErrorCode;
 import org.spring.dojooo.main.users.dto.UserUpdateRequest;
 import org.spring.dojooo.main.users.exception.IllegalArgumentExceptio;
 import org.spring.dojooo.main.users.model.Role;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 
 import java.util.Arrays;
@@ -14,7 +15,9 @@ import java.util.Arrays;
 @Getter
 @Entity
 @Table(name = "users")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+
 public class User {
     @Id
     @Column(name = "user_id")
@@ -80,6 +83,10 @@ public class User {
             case PASSWORD -> this.password = userUpdateRequest.getValue();
         }
 
+    }
+    //비밀번호 암호화
+    public void encodePassword(PasswordEncoder passwordEncoder) {
+        this.password = passwordEncoder.encode(this.password);
     }
 
 
