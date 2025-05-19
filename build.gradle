@@ -25,7 +25,7 @@ repositories {
 
 dependencies {
 	//security 설정
-//	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 //	implementation 'org.springframework.boot:spring-boot-starter-security'
 //	testImplementation 'org.springframework.security:spring-security-test'
 
@@ -41,6 +41,12 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	//메일 전송을 위한 라이브러리
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+	//redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
 }
 
