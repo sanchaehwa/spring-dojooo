@@ -59,7 +59,6 @@ public class User {
     //수정 가능 항목
     enum UpdateInfo {
         NICKNAME("nickname"),
-        EMAIL("email"),
         PASSWORD("password");
 
         private String option;
@@ -79,11 +78,10 @@ public class User {
     public void updateUser(UserUpdateRequest userUpdateRequest) {
         switch(UpdateInfo.getUpdateOption(userUpdateRequest.getOption())){
             case NICKNAME -> this.nickname = userUpdateRequest.getValue();
-            case EMAIL -> this.email = userUpdateRequest.getValue();
             case PASSWORD -> this.password = userUpdateRequest.getValue();
         }
-
     }
+
     //비밀번호 암호화
     public void encodePassword(PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(this.password);
@@ -92,10 +90,6 @@ public class User {
     public void deleteUser(){
         this.isDeleted = true;
     }
-
-
-
-
 
 
 }

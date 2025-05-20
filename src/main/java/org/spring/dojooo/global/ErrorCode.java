@@ -25,7 +25,11 @@ public enum ErrorCode {
 
     // Token
     INVALID_TOKEN("유효하지 않은 토큰입니다.", 401),
-    TOKEN_EXPIRED("토큰이 만료되었습니다.", 401);
+    TOKEN_EXPIRED("토큰이 만료되었습니다.", 401),
+
+    //임시저장
+    UPDATE_TIMEOUT("회원 정보 수정 유효 시간이 초과되었습니다",500);
+
 
     private final String message;
     private final int status;
