@@ -67,8 +67,8 @@ public class UserService {
     //임시저장
     @Transactional
     public Map<String, Object> tempStoreUserInfo(Long id, UserUpdateRequest request) {
-        redisUtil.tempUserInformation(id, request);
 
+        redisUtil.tempUserInformation(id, request);
         Long ttl = redisUtil.getRemainingTTL(id);
         if (ttl == null || ttl <= 0) {
             throw new ModificationTimeExceededException(ErrorCode.UPDATE_TIMEOUT);
@@ -90,6 +90,7 @@ public class UserService {
             UserUpdateRequest userUpdateRequest = objectMapper.readValue(json, UserUpdateRequest.class);
             User user = findActiveUser(id);
             user.updateUser(userUpdateRequest);
+            user.encodePassword(passwordEncoder);
             redisTemplate.delete(key);
 
         }catch (JsonProcessingException e){
