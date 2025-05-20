@@ -47,11 +47,11 @@ public class SecurityConfig {
                 .formLogin(form -> form.disable())
                 .httpBasic(basic -> basic.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("users/login", "users/signup").permitAll()
-                        .requestMatchers("/send-mail/**").permitAll()
+//                        .requestMatchers("users/login", "users/signup").permitAll()
+//                        .requestMatchers("/send-mail/**").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .requestMatchers("/reissue").permitAll() //Access 토큰이 만료된 상태에서 Access 토큰, Refresh Token 을 재발급받기 위한 - reissue : permitAll
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .addFilterBefore(new JWTFilter(jwtUtil,customUserDetailsService), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class)

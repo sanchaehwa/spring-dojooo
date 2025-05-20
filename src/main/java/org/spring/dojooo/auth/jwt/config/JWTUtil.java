@@ -53,16 +53,15 @@ public class JWTUtil {
     }
 
    //JWT 생성
-    public String createJwt(String category, String email, String role, Long expiredMs){
-        return Jwts.builder()
-                //.claim 데이터 추가
-                .claim("category", category)
-                .claim("email", email)
-                .claim("role", role)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                //토큰 만료시간
-                .expiration(new Date(System.currentTimeMillis() + expiredMs))
-                .signWith(secretKey)
-                .compact();
-    }
+   public String createJwt(String category, String email, String role, Long exp) {
+
+       return Jwts.builder()
+               .claim("category", category)
+               .claim("email", email)
+               .claim("role", role)
+               .issuedAt(new Date()) //발급 시간은 현재 시간
+               .expiration(new Date(System.currentTimeMillis() + exp)) //만료시간 + 만료기간
+               .signWith(secretKey)
+               .compact();
+   }
 }
