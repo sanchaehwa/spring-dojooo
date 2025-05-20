@@ -1,16 +1,12 @@
 package org.spring.dojooo.main.users.service;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+
 import lombok.RequiredArgsConstructor;
 import org.spring.dojooo.auth.Redis.RedisUtil;
 import org.spring.dojooo.auth.jwt.config.JWTUtil;
 import org.spring.dojooo.global.ErrorCode;
-import org.spring.dojooo.global.exception.ApiException;
 import org.spring.dojooo.main.users.domain.User;
-import org.spring.dojooo.main.users.dto.UserLoginRequest;
-import org.spring.dojooo.main.users.dto.UserLoginResponse;
+
 import org.spring.dojooo.main.users.dto.UserSignUpRequest;
 import org.spring.dojooo.main.users.exception.DuplicateUserException;
 import org.spring.dojooo.main.users.exception.NotFoundUserException;

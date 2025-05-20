@@ -7,17 +7,13 @@ import org.spring.dojooo.auth.Redis.RedisUtil;
 import org.spring.dojooo.global.ErrorCode;
 import org.spring.dojooo.global.exception.ApiException;
 import org.spring.dojooo.global.response.ApiResponse;
+
 import org.spring.dojooo.main.users.domain.User;
-import org.spring.dojooo.main.users.dto.UserLoginRequest;
-import org.spring.dojooo.main.users.dto.UserLoginResponse;
 import org.spring.dojooo.main.users.dto.UserSignUpRequest;
 import org.spring.dojooo.main.users.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
@@ -39,7 +35,15 @@ public class UserController {
 
         redisUtil.deleteEmailCode("verified:" + email);
         log.info("회원가입 성공, userId = {}", userId);
-        return ResponseEntity.ok(ApiResponse.of(userId));
+        return ResponseEntity.ok(ApiResponse.of(201,"회원가입이 완료되었습니다",userId));
+    }
+
+    @Operation(summary="회원 조회", description = "사용자의 ID를 전달받아 회원 조회를 합니다")
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<User>> findUserById(@PathVariable Long id) { //@PathWariable 동적으로 URL에 정보를 담을 수 있음.
+        User user = userService.findUserById(id);
+        return ResponseEntity.ok(ApiResponse.ok(user));
+
     }
 
 
