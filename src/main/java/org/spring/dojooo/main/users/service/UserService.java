@@ -8,6 +8,7 @@ import org.spring.dojooo.global.ErrorCode;
 import org.spring.dojooo.main.users.domain.User;
 
 import org.spring.dojooo.main.users.dto.UserSignUpRequest;
+import org.spring.dojooo.main.users.dto.UserUpdateRequest;
 import org.spring.dojooo.main.users.exception.DuplicateUserException;
 import org.spring.dojooo.main.users.exception.NotFoundUserException;
 import org.spring.dojooo.main.users.repository.UserRepository;
@@ -51,9 +52,25 @@ public class UserService {
     //회원 삭제
     @Transactional
     public void deleteUser(Long id) {
-        User user = findUserById(id);
-        userRepository.delete(user); //UserRepository에서 User 정보 삭제
+        User user = findActiveUser(id); //삭제할 회원의 객체를 꺼냄
+        user.deleteUser(); //논리삭제
         redisUtil.deleteRefreshToken(user.getEmail()); //Redis에서 RefreshToken 삭제
+        //변경된 User 상태는 트랜잭션이 끝날때 , 자동 Dirty Checking 으로 반영
+    }
+    //회원 정보 수정
+    @Transactional
+    public Long updateUser(Long id, UserUpdateRequest userUpdateRequest) {
+        User user = findActiveUser(id);
+        user.updateUser(userUpdateRequest);
+        user.encodePassword(passwordEncoder);
+        return user.getId();
+    }
+
+    //DB에 존재하는 회원인지 아닌지 확인(회원 조회)
+    @Transactional(readOnly = true)
+    public User findActiveUser(Long id) {
+        return userRepository.findByIdAndIsDeletedFalse(id)
+                .orElseThrow(() -> new NotFoundUserException(ErrorCode.NOT_FOUND_USER));
     }
 
 

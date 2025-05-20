@@ -88,6 +88,10 @@ public class User {
     public void encodePassword(PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(this.password);
     }
+    //회원 탈퇴 - 회원 삭제
+    public void deleteUser(){
+        this.isDeleted = true;
+    }
 
 
 

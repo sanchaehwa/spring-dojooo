@@ -10,6 +10,7 @@ import org.spring.dojooo.global.response.ApiResponse;
 
 import org.spring.dojooo.main.users.domain.User;
 import org.spring.dojooo.main.users.dto.UserSignUpRequest;
+import org.spring.dojooo.main.users.dto.UserUpdateRequest;
 import org.spring.dojooo.main.users.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -45,10 +46,16 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.ok(user));
 
     }
+    //회원 정보 수정
+    @Operation(summary = "회원 정보 수정", description = "회원 정보를 수정하려는 회원의 ID를 받아 회원정보 수정을 합니다")
+    @PatchMapping("update/{id}")
+    public ResponseEntity<ApiResponse<Long>> updateUser (
+            @PathVariable Long id,
+            @RequestBody UserUpdateRequest userUpdateRequest
+    ) {
+        return ResponseEntity.ok(ApiResponse.of(200, "회원 정보 수정이 완료되었습니다", userService.updateUser(id,userUpdateRequest)));
+    }
+
 
 
 }
-/*
-소셜 로그인 -> 소셜 로그인 타입 넣어줘야하고
-회원 가입 -> SuperAdmin 이 Admin 부여 할수 있게할건데.
- */
