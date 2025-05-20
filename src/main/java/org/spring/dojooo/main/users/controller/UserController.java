@@ -11,10 +11,13 @@ import org.spring.dojooo.global.response.ApiResponse;
 import org.spring.dojooo.main.users.domain.User;
 import org.spring.dojooo.main.users.dto.UserSignUpRequest;
 import org.spring.dojooo.main.users.dto.UserUpdateRequest;
+import org.spring.dojooo.main.users.exception.ModificationTimeExceededException;
 import org.spring.dojooo.main.users.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
@@ -54,6 +57,25 @@ public class UserController {
             @RequestBody UserUpdateRequest userUpdateRequest
     ) {
         return ResponseEntity.ok(ApiResponse.of(200, "회원 정보 수정이 완료되었습니다", userService.updateUser(id,userUpdateRequest)));
+    }
+    //회원 정보 임시 저장 /Users/update -> 임시저장 -> /users/update/temp
+    @Operation(summary = "회원 정보 수정 임시 저장", description = "회원 정보를 수정하려는 회원의 IF를 받아 회원정보 수정 진행 중 임시저장 할 경우")
+    @PatchMapping("update/temp/{id}")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> updateTempUser (
+            @PathVariable Long id,
+            @RequestBody UserUpdateRequest userUpdateRequest
+    ) {
+        Map<String, Object> responseData = userService.tempStoreUserInfo(id, userUpdateRequest);
+        return ResponseEntity.ok(ApiResponse.of(200, "회원 정보 수정이 임시 저장 되었습니다", responseData));
+    }
+
+    @Operation(summary = "회원정보 수정 임시저장 반영 완료", description = "회원 정보 임시저장된 수정이 저장된 경우")
+    @PatchMapping("/update/temp/final/{id}")
+    public ResponseEntity<ApiResponse<Long>> updateTempFinalUser (
+            @PathVariable Long id
+    ){
+        userService.finalizeUserUpdate(id);
+        return ResponseEntity.ok(ApiResponse.of(200, "회원 정보 수정이 완료되었습니다", id));
     }
 
 

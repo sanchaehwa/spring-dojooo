@@ -1,18 +1,27 @@
 package org.spring.dojooo.auth.Redis;
 
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.spring.dojooo.main.users.dto.UserUpdateRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Component
 @Slf4j
 @RequiredArgsConstructor
 public class RedisUtil {
     private final RedisTemplate<String, String> redisTemplate;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @PostConstruct
     public void init() {
@@ -50,4 +59,21 @@ public class RedisUtil {
     public void deleteRefreshToken(String username) {
         redisTemplate.delete("refresh:" + username);
     }
+    //회원 정보 수정 임시 저장
+    public void tempUserInformation(Long userId, UserUpdateRequest userUpdateRequest) {
+        try {
+            String key = "tempUserInformation:" + userId;
+            String value = objectMapper.writeValueAsString(userUpdateRequest); // 객체 → JSON 문자열
+            Duration ttl = Duration.ofMinutes(10);
+            log.info("Redis 저장시도 - key: {}, value: {}", key, value);
+            redisTemplate.opsForValue().set(key, value, ttl); // TTL 10분동안 보관 - 10분 지나면 자동 삭제
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("JSON 변환 실패", e);
+        }
+    }
+    public Long getRemainingTTL(Long userId) {
+        String key = "tempUserInformation:" + userId;
+        return redisTemplate.getExpire(key, TimeUnit.SECONDS);
+    }
+
 }
