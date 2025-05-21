@@ -59,21 +59,6 @@ public class RedisUtil {
     public void deleteRefreshToken(String username) {
         redisTemplate.delete("refresh:" + username);
     }
-    //회원 정보 수정 임시 저장
-    public void tempUserInformation(Long userId, UserUpdateRequest userUpdateRequest) {
-        try {
-            String key = "tempUserInformation:" + userId;
-            String value = objectMapper.writeValueAsString(userUpdateRequest); // 객체 → JSON 문자열
-            Duration ttl = Duration.ofMinutes(10);
-            log.info("Redis 저장시도 - key: {}, value: {}", key, value);
-            redisTemplate.opsForValue().set(key, value, ttl); // TTL 10분동안 보관 - 10분 지나면 자동 삭제
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("JSON 변환 실패", e);
-        }
-    }
-    public Long getRemainingTTL(Long userId) {
-        String key = "tempUserInformation:" + userId;
-        return redisTemplate.getExpire(key, TimeUnit.SECONDS);
-    }
+
 
 }

@@ -17,6 +17,7 @@ public enum ErrorCode {
 
     DUPLICATE_USER("이미 가입되어 있는 사용자 입니다", 409),
     NOT_FOUND_USER("사용자를 찾을 수 없습니다", 404),
+    DUPLICATE_EMAIL("이미 사용중인 이메일 주소입니다",409),
     //로그인 관련
     INVALID_LOGIN_INPUT("이메일 주소 또는 비밀번호가 일치하지 않습니다",401),
     FAILED_LOGIN("로그인에 실패하였습니다" ,401),
