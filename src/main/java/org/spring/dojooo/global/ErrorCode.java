@@ -23,9 +23,11 @@ public enum ErrorCode {
     ACCOUNT_LOCKED("계정이 잠겼습니다",403 ),
     ACCOUNT_DISABLE("비활성화된 계정입니다", 403),
 
+    //로그아웃 관련
     // Token
     INVALID_TOKEN("유효하지 않은 토큰입니다.", 401),
     TOKEN_EXPIRED("토큰이 만료되었습니다.", 401),
+    TOKEN_FORMAT("토큰 형식이 맞지않습니다",400),
 
     //임시저장
     UPDATE_TIMEOUT("회원 정보 수정 유효 시간이 초과되었습니다",500);
