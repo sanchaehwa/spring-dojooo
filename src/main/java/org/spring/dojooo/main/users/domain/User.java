@@ -5,7 +5,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import org.spring.dojooo.global.ErrorCode;
 import org.spring.dojooo.main.users.dto.UserUpdateRequest;
-import org.spring.dojooo.main.users.exception.IllegalArgumentExceptio;
+import org.spring.dojooo.main.users.exception.IllegalArgumentException;
 import org.spring.dojooo.main.users.model.Role;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -59,7 +59,7 @@ public class User {
     //수정 가능 항목
     enum UpdateInfo {
         NICKNAME("nickname"),
-        PASSWORD("password");
+        EMAIL("email");
 
         private String option;
 
@@ -71,14 +71,14 @@ public class User {
                     .stream(UpdateInfo.values())
                     .filter(user -> user.option.equals(input)) //Option 필드가 입력값과 일치하는지 필터링
                     .findFirst() //일치한 첫번째 값을 Optional
-                    .orElseThrow(() -> new IllegalArgumentExceptio(ErrorCode.INVALID_INPUT)); //예외처리
+                    .orElseThrow(() -> new IllegalArgumentException(ErrorCode.INVALID_INPUT)); //예외처리
         }
     }
     //회원 정보 수정
     public void updateUser(UserUpdateRequest userUpdateRequest) {
         switch(UpdateInfo.getUpdateOption(userUpdateRequest.getOption())){
             case NICKNAME -> this.nickname = userUpdateRequest.getValue();
-            case PASSWORD -> this.password = userUpdateRequest.getValue();
+            case EMAIL -> this.email = userUpdateRequest.getValue();
         }
     }
 
