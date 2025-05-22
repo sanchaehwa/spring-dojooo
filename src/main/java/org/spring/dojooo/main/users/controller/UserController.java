@@ -24,7 +24,7 @@ public class UserController {
     private final RedisUtil redisUtil;
 
     //회원가입 요청
-    @Operation(summary = "회원가입", description = "회원 가입 정보를 전달받아 회원 가입 합니다")
+    @Operation(summary = "회원가입", description = "회원가입은 이메일 인증 후 10분 이내에 완료되어야 하며, 이메일 인증 코드는 발송 후 5분 이내에 입력해야 유효합니다.")
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<Long>> createUser(@Validated @RequestBody UserSignUpRequest userSignUpRequest) {
         log.info("회원가입 성공");

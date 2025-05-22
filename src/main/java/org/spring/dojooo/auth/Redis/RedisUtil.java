@@ -28,12 +28,14 @@ public class RedisUtil {
         log.info("RedisUtil 초기화됨: RedisTemplate = {}", redisTemplate);
     }
 
+    //이메일 인증 코드
     public void saveEmailCode(String email, String code) {
         log.info("Redis 저장 시도 - email: {}, code: {}", email,code);
+        redisTemplate.opsForValue().set("emailCode:" + email,code,Duration.ofMinutes(5)); //5분 유효 (이메일을 5분안에 입력해야함.)
     }
     //유효 검증
     public void saveVerifiedEmail(String email) {
-        redisTemplate.opsForValue().set("verified:" + email, "true", Duration.ofMinutes(10));  // 10분 유효
+        redisTemplate.opsForValue().set("verified:" + email, "true", Duration.ofMinutes(10));  // 10분 유효 (10분안에 회원가입을 완료해야함)
     }
 
     public boolean isVerifiedEmail(String email) {
@@ -41,21 +43,27 @@ public class RedisUtil {
         return "true".equals(result);
     }
 
-
     public String getEmailCode(String email) {
-        return redisTemplate.opsForValue().get(email);
+        return redisTemplate.opsForValue().get("emailCode:" + email);
     }
 
     public void deleteEmailCode(String email) {
-        redisTemplate.delete(email);
+        redisTemplate.delete("emailCode:"+ email);
     }
+
+    public void deleteVerifiedEmail(String email) {
+        redisTemplate.delete("verified:" + email);
+    }
+
     public void saveRefreshToken(String username, String refreshToken) {
         log.info("Redis 저장 시도 - user: {}. refreshToken: {}", username, refreshToken);
-        redisTemplate.opsForValue().set("refresh:" + username,refreshToken);
+        redisTemplate.opsForValue().set("refresh:" + username,refreshToken,Duration.ofMinutes(30)); //30분 RefreshToken 유효하게 설정
     }
+
     public String getRefreshToken(String username) {
         return redisTemplate.opsForValue().get("refresh:" + username);
     }
+
     public void deleteRefreshToken(String username) {
         redisTemplate.delete("refresh:" + username);
     }

@@ -13,4 +13,5 @@ public class ApiException extends RuntimeException {
   public ErrorCode getErrorCode() {
     return errorCode;
   }
+
 }

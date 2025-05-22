@@ -22,7 +22,6 @@ import java.util.Random;
 public class EmailService {
     private final JavaMailSender javaMailSender;
 
-    private final UserService userService;
     private final RedisTemplate<String, String> redisTemplate;
     private final SpringTemplateEngine templateEngine;
 
@@ -36,8 +35,7 @@ public class EmailService {
                 mimeMessage.setText("인증번호: " + authNum, "utf-8");
                 javaMailSender.send(mimeMessage);
 
-                // 인증번호 Redis에 저장 (5분 유효)
-                redisTemplate.opsForValue().set(emailMessage.getTo(), authNum, Duration.ofMinutes(5));
+                redisTemplate.opsForValue().set("emailCode:" + emailMessage.getTo(), authNum, Duration.ofMinutes(5));
             }
         } catch (MessagingException e) {
             log.error("메일 전송 실패", e);
