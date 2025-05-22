@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.spring.dojooo.auth.Redis.RedisUtil;
 import org.spring.dojooo.auth.jwt.config.JWTUtil;
 
-import org.spring.dojooo.main.users.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class ReissueController {
     private final JWTUtil jwtUtil;
     private final RedisUtil redisUtil;
-    private final UserRepository userRepository;
 
     @Operation(summary = "AccessToken 재발급",description = "Access Token 만료시")
     @PostMapping("/reissue")
@@ -74,7 +72,7 @@ public class ReissueController {
         //Access 생성
         String newAccess = jwtUtil.createJwt("access", email, role, 600000L);
         //Refresh 생성 (Refresh Rotate)-Access +  Refresh 재발급
-        String newRefresh = jwtUtil.createJwt("refresh", email, role, 1800000L); //30qns
+        String newRefresh = jwtUtil.createJwt("refresh", email, role, 1800000L); //30 -> JWT 내부의 만료시간
 
         redisUtil.saveRefreshToken(email, newRefresh);
         response.setHeader("access", newAccess);

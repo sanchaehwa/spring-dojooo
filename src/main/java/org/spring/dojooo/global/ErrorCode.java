@@ -14,6 +14,9 @@ public enum ErrorCode {
     CONFLICT_ERROR("중복된 값입니다.", 409),
 
     EMAIL_BAD_REQUEST("이메일 인증이 완료되지 못했습니다", 401),
+    EMAIL_AUTH_TIMEOUT("이메일 인증 시간이 만료되었습니다. 다시 인증해주세요",401),
+    EMAIL_CODE_EXPIRED("인증번호가 만료되었거나 존재하지 않습니다.", 400),
+    EMAIL_CODE_NOT_MATCH("인증번호가 일치하지 않습니다.", 400),
 
     DUPLICATE_USER("이미 가입되어 있는 사용자 입니다", 409),
     NOT_FOUND_USER("사용자를 찾을 수 없습니다", 404),

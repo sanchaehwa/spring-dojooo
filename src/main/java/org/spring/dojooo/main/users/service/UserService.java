@@ -32,12 +32,15 @@ public class UserService {
     public Long saveUser(UserSignUpRequest userSignUpRequest) {
         //이미 존재하는 회원인지 아닌지 확인
         validateDuplicateUser(userSignUpRequest); //이메일 중복 체크
+
         User user = userSignUpRequest.toEntity();
+
         String userEmail = user.getEmail();
-        if (!redisUtil.isVerifiedEmail(userEmail)) {
-            throw new ApiException(ErrorCode.EMAIL_BAD_REQUEST);
+        if (!redisUtil.isVerifiedEmail(userEmail)) { //10분간 유효 (인증완료된 상태임을 알려주는)
+            throw new ApiException(ErrorCode.EMAIL_AUTH_TIMEOUT); //10분이 지나면 다시 인증
         }
-        redisUtil.deleteEmailCode("verified:"+userEmail);
+        //회원가입 완료하면
+        redisUtil.deleteVerifiedEmail(userEmail);
         //비밀번호 암호화
         user.encodePassword(passwordEncoder);
         return userRepository.save(user).getId();
@@ -71,7 +74,7 @@ public class UserService {
             if (!redisUtil.isVerifiedEmail(newEmail)) {
                 throw new ApiException(ErrorCode.EMAIL_BAD_REQUEST);
             }
-            redisUtil.deleteEmailCode("verified:" + newEmail);
+            redisUtil.deleteVerifiedEmail(newEmail);
         }
         user.updateUser(userUpdateRequest);
         return user.getId();
@@ -83,10 +86,6 @@ public class UserService {
         return userRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new NotFoundUserException(ErrorCode.NOT_FOUND_USER));
     }
-
-
-
-
 
 
 
