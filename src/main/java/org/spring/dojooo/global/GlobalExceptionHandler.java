@@ -2,6 +2,7 @@ package org.spring.dojooo.global;
 
 import lombok.extern.slf4j.Slf4j;
 import org.spring.dojooo.auth.jwt.exception.InvalidTokenException;
+import org.spring.dojooo.global.exception.ApiException;
 import org.spring.dojooo.global.exception.NotFoundException;
 import org.spring.dojooo.main.users.exception.DuplicateUserException;
 import org.spring.dojooo.main.users.exception.NotFoundUserException;
@@ -21,7 +22,11 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR);
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
+    @ExceptionHandler(ApiException.class)
+    public ResponseEntity<ErrorResponse> handleApiException(ApiException exception) {
+        ErrorResponse errorResponse = ErrorResponse.of(exception.getErrorCode());
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValid(
             MethodArgumentNotValidException exception
