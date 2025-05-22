@@ -37,7 +37,6 @@ public class UserController {
     public ResponseEntity<ApiResponse<User>> findUserById(@PathVariable Long id) { //@PathWariable 동적으로 URL에 정보를 담을 수 있음.
         User user = userService.findUserById(id);
         return ResponseEntity.ok(ApiResponse.ok(user));
-
     }
 
     //회원 정보 수정

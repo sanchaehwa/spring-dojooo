@@ -17,6 +17,8 @@ import org.spring.dojooo.main.users.model.Role;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -43,29 +45,28 @@ public class JWTFilter extends OncePerRequestFilter {
         //순수토큰 획득(Barer 추출하고 순수 토큰만 사용)
         String accessToken = AccessToken.substring(BEARER.length());
 
-        //토큰 만료시, 다음 필터로 넘기지 않음.
-        if (jwtUtil.isExpired(accessToken)) {
-            log.debug("Access token is expired");
-            throw new InvalidTokenException(ErrorCode.TOKEN_EXPIRED);
-        }
-        try {
-            //토큰 유효시의 동작
+        try{
+            //서명 및 유효성 검증
+            jwtUtil.validateToken(accessToken);
+            //토큰에서 이메일 추출
             String email = jwtUtil.getUsermail(accessToken);
-
-            User user = User.builder().email(email).build();
-
-            //이메일 기반으로 사용자 로딩
+            //회원 조회 -- 존재하지않으면 예외 발생 (UserNameNotFoundException)
             CustomUserDetails customUserDetails = (CustomUserDetails) customUserDetailsService.loadUserByUsername(email);
-            //스프링 시큐리티 인증 토큰 생성
-            Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
-            //인증 객체를 만들어서
-            SecurityContextHolder.getContext().setAuthentication(authToken);
+            //인증 객체 생성 및  Security Context 저장
+            Authentication authtToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authtToken);
 
-        } catch (Exception e) {
-            log.error("JWT token parsing failed", e);
-            throw new InvalidTokenException(ErrorCode.INVALID_TOKEN);
+        }catch(UsernameNotFoundException e) {
+            log.warn("User not Found for token email:{}",e.getMessage());
+            throw new InvalidTokenException(ErrorCode.NOT_FOUND_USER);
+        }
+        catch (InvalidTokenException e) {
+            throw e; //이미 JWT Util에 정의 해둠
+        }
+        catch (Exception e) {
+            log.error("Unexpected error", e);
+            throw new InvalidTokenException(ErrorCode.UNSUPPORTED_TOKEN);
         }
         filterChain.doFilter(request, response);
-
     }
 }

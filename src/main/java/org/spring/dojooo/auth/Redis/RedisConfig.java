@@ -24,7 +24,8 @@ public class RedisConfig {
         log.info("Connecting to Redis at {}:{}", host, port);
         return new LettuceConnectionFactory(host, port);
     }
-    //RedisTemplate에 등록
+
+    //redis-cli 사용을 위한 설정
     @Bean
     public RedisTemplate<String, String> redisTemplate(RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, String> template = new RedisTemplate<>();

@@ -58,6 +58,11 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
             String role = authorities.iterator().hasNext() ? authorities.iterator().next().getAuthority() : "ROLE_USER";
 
+            //기존에 RefreshToken이 있는지 확인
+            if(redisUtil.getRefreshToken(email) != null){
+                redisUtil.deleteRefreshToken(email);
+            }
+
             //토큰 생성
             String access = jwtUtil.createJwt("access", email, role, 600000L); //10분 만료시간
             String refresh = jwtUtil.createJwt("refresh", email, role, 1800000L); //30분 만료시간

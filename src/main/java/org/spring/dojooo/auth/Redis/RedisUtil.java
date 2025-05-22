@@ -55,17 +55,18 @@ public class RedisUtil {
         redisTemplate.delete("verified:" + email);
     }
 
-    public void saveRefreshToken(String username, String refreshToken) {
-        log.info("Redis 저장 시도 - user: {}. refreshToken: {}", username, refreshToken);
-        redisTemplate.opsForValue().set("refresh:" + username,refreshToken,Duration.ofMinutes(30)); //30분 RefreshToken 유효하게 설정
+    public void saveRefreshToken(String email, String refreshToken) {
+        log.info("Redis 저장 시도 - user: {}. refreshToken: {}", email, refreshToken);
+        redisTemplate.opsForValue().set("refresh:" + email,refreshToken,Duration.ofMinutes(30)); //30분 RefreshToken 유효하게 설정
     }
 
-    public String getRefreshToken(String username) {
-        return redisTemplate.opsForValue().get("refresh:" + username);
+    public String getRefreshToken(String email) {
+        return redisTemplate.opsForValue().get("refresh:" + email);
     }
 
-    public void deleteRefreshToken(String username) {
-        redisTemplate.delete("refresh:" + username);
+    public void deleteRefreshToken(String email) {
+        Boolean deleted = redisTemplate.delete("refresh:" + email);
+        log.info("Redis 삭제 - user: {}. refreshToken: {}", email,deleted);
     }
 
 
