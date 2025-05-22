@@ -1,12 +1,12 @@
 package org.spring.dojooo.auth.jwt.dto;
-
 import lombok.RequiredArgsConstructor;
 import org.spring.dojooo.main.users.domain.User;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 @RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
@@ -14,23 +14,19 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new GrantedAuthority(){
-            @Override
-            public String getAuthority() {
-                return user.getRole().name();
-            }
-        });
-        return authorities;
+        return Collections.singletonList(new SimpleGrantedAuthority(user.getRole().name()));
     }
+
     @Override
     public String getPassword() {
         return user.getPassword();
     }
+
     @Override
-    public String getUsername(){
+    public String getUsername() {
         return user.getEmail();
     }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -47,10 +43,11 @@ public class CustomUserDetails implements UserDetails {
     }
 
     @Override
-    public boolean isEnabled() {return true;}
+    public boolean isEnabled() {
+        return true;
+    }
 
     public Long getId() {
         return user.getId();
     }
-
 }

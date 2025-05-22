@@ -15,7 +15,10 @@ import org.springframework.stereotype.Service;
 public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
-    // 이메일로 사용자 조회
+    /**
+     * Spring Security가 인증 시 호출하는 메서드
+     * 이메일을 기준으로 사용자 정보를 조회
+     */
     @Override
     public UserDetails loadUserByUsername(String email) {
         User user = userRepository.findByEmail(email)

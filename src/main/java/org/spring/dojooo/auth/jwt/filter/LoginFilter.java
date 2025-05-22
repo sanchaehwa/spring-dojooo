@@ -43,22 +43,20 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             return authenticationManager.authenticate(authRequest);
         }
         catch(IOException e){
-            throw new RuntimeException("Failed to parse login request JSON",e);
-        }
+            throw new AuthenticationServiceException("Invalid login request format",e);        }
     }
     //로그인 성공
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication)
         throws IOException {
-            log.info("Login success - 로그인 성공");
             //유저 정보
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
             String email = userDetails.getUsername();
 
             Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-            String role = authorities.iterator().hasNext() ? authorities.iterator().next().getAuthority() : "ROLE_USER";
+            String role = authorities.iterator().hasNext() ? ((GrantedAuthority)authorities.iterator().next()).getAuthority() : "ROLE_USER";
 
-            //기존에 RefreshToken이 있는지 확인
+        //기존에 RefreshToken이 있는지 확인
             if(redisUtil.getRefreshToken(email) != null){
                 redisUtil.deleteRefreshToken(email);
             }
@@ -68,7 +66,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             String refresh = jwtUtil.createJwt("refresh", email, role, 1800000L); //30분 만료시간
 
             //Access Token 저장
-            response.setHeader("access_token", access);
+            response.setHeader("Authorization", "Bearer " + access);
             //refresh Token은 쿠키 - Redis에 저장
             redisUtil.saveRefreshToken(email, refresh);
             response.addCookie(createCookie("refresh", refresh));
@@ -98,26 +96,24 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
         ErrorCode errorCode;
 
-//        if (failed instanceof BadCredentialsException || failed instanceof UsernameNotFoundException) {
-//            errorCode = ErrorCode.INVALID_LOGIN_INPUT;
-//        } else if (failed instanceof LockedException) {
-//            errorCode = ErrorCode.ACCOUNT_LOCKED;
-//        } else if (failed instanceof DisabledException) {
-//            errorCode = ErrorCode.ACCOUNT_DISABLE;
-//        } else {
-//            errorCode = ErrorCode.FAILED_LOGIN;
-//        }
-//
-//        response.setStatus(errorCode.getStatus()); // ErrorCode에 정의된 상태 사용
-//        response.setContentType(MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8");
-//
-//        try {
-//            ErrorResponse errorResponse = ErrorResponse.of(errorCode); //
-//            response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
-//        } catch (IOException e) {
-//            log.error("Failed to write authentication error response", e);
-//        }
-        response.setStatus(401);
+        if (failed instanceof BadCredentialsException || failed instanceof UsernameNotFoundException) {
+            errorCode = ErrorCode.INVALID_LOGIN_INPUT;
+        } else if (failed instanceof LockedException) {
+            errorCode = ErrorCode.ACCOUNT_LOCKED;
+        } else if (failed instanceof DisabledException) {
+            errorCode = ErrorCode.ACCOUNT_DISABLE;
+        } else {
+            errorCode = ErrorCode.FAILED_LOGIN;
+        }
+
+        response.setStatus(errorCode.getStatus());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8");
+        try {
+            ErrorResponse errorResponse = ErrorResponse.of(errorCode);
+            response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
+        } catch (IOException e) {
+            log.error("Failed to write authentication error response", e);
+        }
     }
     //쿠키 생성
     private Cookie createCookie(String key, String value) {
@@ -128,6 +124,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         cookie.setPath("/");
         //쿠키 유효기간 *2주
         cookie.setMaxAge(14*24*60*60);
+        cookie.setSecure(true);
         return cookie;
     }
 
