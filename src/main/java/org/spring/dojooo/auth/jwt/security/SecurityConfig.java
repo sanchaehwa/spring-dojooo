@@ -1,6 +1,7 @@
 package org.spring.dojooo.auth.jwt.security;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.spring.dojooo.auth.Redis.RedisUtil;
 import org.spring.dojooo.auth.jwt.config.JWTUtil;
 import org.spring.dojooo.auth.jwt.filter.JWTFilter;
@@ -16,10 +17,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-
+@Slf4j
 public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JWTUtil jwtUtil;
@@ -27,10 +30,15 @@ public class SecurityConfig {
     private final CustomUserDetailsService customUserDetailsService;
 
     //AuthenticationManager Bean 등록
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
-        return configuration.getAuthenticationManager();
-    }
+//    @Bean
+//    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+//        AuthenticationManagerBuilder builder = http.getSharedObject(AuthenticationManagerBuilder.class);
+//        builder
+//                .userDetailsService(customUserDetailsService)
+//                .passwordEncoder(bCryptPasswordEncoder());
+//
+//        return builder.build();
+//    }
     //비밀번호 암호화
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -39,21 +47,28 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filerChain(HttpSecurity http) throws Exception {
-        LoginFilter loginFilter = new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil,redisUtil);
+        AuthenticationManager authenticationManager = authenticationConfiguration.getAuthenticationManager();
+        LoginFilter loginFilter = new LoginFilter(authenticationManager, jwtUtil, redisUtil);
         loginFilter.setFilterProcessesUrl("/users/login");
-        //csrf disable
+
         http
                 .csrf(csrf -> csrf.disable())
                 .formLogin(form -> form.disable())
                 .httpBasic(basic -> basic.disable())
                 .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("users/login", "users/signup").permitAll()
-//                        .requestMatchers("/send-mail/**").permitAll()
+                        .requestMatchers(
+                                "/users/login",
+                                "/users/signup",
+                                "/send-mail/**",
+                                "/reissue",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
-                        .requestMatchers("/reissue").permitAll() //Access 토큰이 만료된 상태에서 Access 토큰, Refresh Token 을 재발급받기 위한 - reissue : permitAll
-                        .anyRequest().permitAll()
+                        .anyRequest().authenticated()
                 )
-                .addFilterBefore(new JWTFilter(jwtUtil,customUserDetailsService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JWTFilter(jwtUtil, customUserDetailsService), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
