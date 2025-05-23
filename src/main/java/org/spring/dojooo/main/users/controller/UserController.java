@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.spring.dojooo.auth.Redis.RedisUtil;
+import org.spring.dojooo.auth.jwt.dto.CustomUserDetails;
 import org.spring.dojooo.global.response.ApiResponse;
 
 import org.spring.dojooo.main.users.domain.User;
@@ -12,6 +13,8 @@ import org.spring.dojooo.main.users.dto.UserUpdateRequest;
 import org.spring.dojooo.main.users.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,5 +52,37 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.of(200, "회원 정보 수정이 완료되었습니다", userService.updateUser(id, userUpdateRequest)));
 
     }
+    //로그아웃
+    @Operation(summary = "로그아웃", description = "로그아웃 시, Refresh Token도 삭제합니다")
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<String>> logout() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails customUserDetails) {
+            String email = customUserDetails.getUsername();
+
+            // Redis Refresh Token 삭제
+            redisUtil.deleteRefreshToken(email);
+
+            log.info("사용자 로그아웃 성공 - {}", email);
+
+            // SecurityContext 초기화
+            SecurityContextHolder.clearContext();
+
+
+            return ResponseEntity.ok(ApiResponse.of(200, "로그아웃이 성공적으로 처리되었습니다", email));
+        }
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(ApiResponse.of(401, "인증되지 않은 사용자입니다.", null));    
+    }
+    //회원 탈퇴
+    @Operation(summary = "회원 탈퇴",description = "회원 탈퇴하고자하는 사용자의 정보를 받아, 탈퇴처리합니다")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Long>> deleteUser(@PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.of(200,"회원 탈퇴가 완료되었습니다",userService.deleteUser(id)));
+    }
+
 
 }

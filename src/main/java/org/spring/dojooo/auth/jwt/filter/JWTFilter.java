@@ -13,11 +13,9 @@ import org.spring.dojooo.auth.jwt.dto.CustomUserDetails;
 import org.spring.dojooo.auth.jwt.security.CustomUserDetailsService;
 import org.spring.dojooo.global.ErrorCode;
 import org.spring.dojooo.main.users.domain.User;
-import org.spring.dojooo.main.users.model.Role;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -32,6 +30,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        log.info("[JWTFilter] 요청 URI: {}", request.getRequestURI());
         String authorization = request.getHeader(AUTH_HEADER);
 
         if (authorization == null || !authorization.startsWith(BEARER)) {
