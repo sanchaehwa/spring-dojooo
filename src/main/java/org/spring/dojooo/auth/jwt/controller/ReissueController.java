@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.spring.dojooo.auth.Redis.RedisUtil;
+import org.spring.dojooo.global.Redis.RedisUtil;
 import org.spring.dojooo.auth.jwt.config.JWTUtil;
 
 import org.springframework.http.HttpStatus;
