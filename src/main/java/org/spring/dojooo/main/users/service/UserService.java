@@ -1,9 +1,9 @@
 package org.spring.dojooo.main.users.service;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.spring.dojooo.auth.Redis.RedisUtil;
+import org.spring.dojooo.auth.jwt.security.CustomUserDetailsService;
 import org.spring.dojooo.global.ErrorCode;
 import org.spring.dojooo.global.exception.ApiException;
 import org.spring.dojooo.main.users.domain.User;
@@ -25,8 +25,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final RedisUtil redisUtil;
     private final RedisTemplate<String, String> redisTemplate;
-    private final ObjectMapper objectMapper;
-
+    private final CustomUserDetailsService customUserDetailsService;
 
     @Transactional
     public Long saveUser(UserSignUpRequest userSignUpRequest) {
@@ -79,6 +78,14 @@ public class UserService {
         user.updateUser(userUpdateRequest);
         return user.getId();
     }
+    //회원 탈퇴
+    @Transactional
+    public Long deleteUser(Long id) {
+        User user = findActiveUser(id); //회원 조회
+        //refresh Token 삭제
+        redisUtil.deleteRefreshToken( user.getEmail());
+        return user.getId();
+    }
 
     //DB에 존재하는 회원인지 아닌지 확인(회원 조회)
     @Transactional(readOnly = true)
@@ -86,6 +93,8 @@ public class UserService {
         return userRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new NotFoundUserException(ErrorCode.NOT_FOUND_USER));
     }
+
+
 
 
 
