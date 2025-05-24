@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,12 +21,13 @@ import java.io.IOException;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/upload")
 public class ImageController {
 
     private final ImageService imageService;
 
     @Operation(summary = "프로필 사진 업로드", description = "사용자가 마이페이지에서 프로필 사진을 등록할 수 있습니다")
-    @PostMapping("/users/profile/images")
+    @PostMapping("/profile")
     public ResponseEntity<ApiResponse<String>> uploadProfileImage(@RequestParam("file") MultipartFile file, Authentication authentication) throws IOException {
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal(); //현재 로그인한 사용자의 정보 추출

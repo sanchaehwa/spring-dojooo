@@ -6,14 +6,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.spring.dojooo.main.users.dto.UserUpdateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 @Component
 @Slf4j
@@ -68,6 +65,19 @@ public class RedisUtil {
         Boolean deleted = redisTemplate.delete("refresh:" + email);
         log.info("Redis 삭제 - user: {}. refreshToken: {}", email,deleted);
     }
+    //회원 정보 수정 임시 저장
+    public void tempUserSelfIntroduction(String email, String getSelfIntroduction) {
+        try {
+            String key = "tempUserSelfIntroduction:" + email;
+            String value = objectMapper.writeValueAsString(getSelfIntroduction); // 객체 → JSON 문자열
+            Duration ttl = Duration.ofMinutes(30);
+            log.info("Redis 저장시도 - key: {}, value: {}", key, value);
+            redisTemplate.opsForValue().set(key, value, ttl); // 30분
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("JSON 변환 실패", e);
+        }
+    }
+
 
 
 }

@@ -47,13 +47,17 @@ public class User {
     @Column(nullable = false, columnDefinition = "TINYINT default 0")
     private boolean isDeleted;
 
+    @Embedded
+    private Profile profile;
+
     @Builder
-    public User(String nickname, String email, String password) {
+    public User(String nickname, String email, String password,Profile profile) {
         this.nickname = nickname;
         this.email = email;
         this.password = password;
         this.role = Role.USER;
         this.isDeleted = false;
+        this.profile = new Profile(null,null); //profileimage = null, introduction = null
 
     }
     //수정 가능 항목
@@ -89,6 +93,9 @@ public class User {
     //회원 탈퇴 - 회원 삭제
     public void deleteUser(){
         this.isDeleted = true;
+    }
+    public void updateProfile(Profile profile) {
+        this.profile = profile;
     }
 
 
