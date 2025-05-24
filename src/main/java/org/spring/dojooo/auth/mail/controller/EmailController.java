@@ -3,7 +3,7 @@ package org.spring.dojooo.auth.mail.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.spring.dojooo.auth.Redis.RedisUtil;
+import org.spring.dojooo.global.Redis.RedisUtil;
 import org.spring.dojooo.auth.mail.dto.EmailMessage;
 import org.spring.dojooo.auth.mail.dto.EmailPost;
 import org.spring.dojooo.auth.mail.dto.EmailResponse;
@@ -11,11 +11,8 @@ import org.spring.dojooo.auth.mail.dto.EmailVerifyRequest;
 import org.spring.dojooo.auth.mail.service.EmailService;
 import org.spring.dojooo.global.ErrorCode;
 import org.spring.dojooo.global.exception.ApiException;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.Duration;
 
 
 @RestController

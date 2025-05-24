@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.spring.dojooo.auth.jwt.exception.InvalidTokenException;
 import org.spring.dojooo.global.exception.ApiException;
 import org.spring.dojooo.global.exception.NotFoundException;
+import org.spring.dojooo.global.exception.S3Exception;
 import org.spring.dojooo.main.users.exception.DuplicateUserException;
 import org.spring.dojooo.main.users.exception.NotFoundUserException;
 import org.springframework.http.HttpStatus;
@@ -60,6 +61,12 @@ public class GlobalExceptionHandler {
         log.error("handleInvalidTokenException", exception);
         ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.INVALID_TOKEN);
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+    }
+    @ExceptionHandler(S3Exception.class)
+    public ResponseEntity<ErrorResponse> handleS3Exception(S3Exception exception) {
+        log.error("handleS3Exception", exception);
+        ErrorResponse errorResponse = ErrorResponse.of(exception.getErrorCode());
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
 }

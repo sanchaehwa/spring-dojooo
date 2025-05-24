@@ -32,8 +32,16 @@ public enum ErrorCode {
     TOKEN_EXPIRED("토큰이 만료되었습니다.", 401),
     UNSUPPORTED_TOKEN("지원하지 않는 토큰입니다",400),
 
+    //S3 Exception
+    EMPTY_FILE_EXCEPTION("이미지 파일이 비어있습니다",400),
+    IO_EXCEPTION_ON_IMAGE_UPLOAD("이미지 업로드 중 입출력 오류가 발생하였습니다",500),
+    NO_FILE_EXTENTION("파일 확장자가 존재하지않습니다",400),
+    PUT_OBJECT_EXCEPTION("S3에 파일 업로드 중 오류가 발생했습니다", 500),
+    IO_EXCEPTION_ON_IMAGE_DELETE("이미지 삭제 중 입출력 오류가 발생했습니다", 500),
+
     //임시저장
     UPDATE_TIMEOUT("회원 정보 수정 유효 시간이 초과되었습니다",500);
+
 
 
     private final String message;

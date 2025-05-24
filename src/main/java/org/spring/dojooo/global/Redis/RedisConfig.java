@@ -1,4 +1,4 @@
-package org.spring.dojooo.auth.Redis;
+package org.spring.dojooo.global.Redis;
 
 import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package org.spring.dojooo.auth.Redis;
+package org.spring.dojooo.global.Redis;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;

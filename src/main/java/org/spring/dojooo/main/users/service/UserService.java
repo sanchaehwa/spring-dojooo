@@ -2,7 +2,7 @@ package org.spring.dojooo.main.users.service;
 
 
 import lombok.RequiredArgsConstructor;
-import org.spring.dojooo.auth.Redis.RedisUtil;
+import org.spring.dojooo.global.Redis.RedisUtil;
 import org.spring.dojooo.auth.jwt.security.CustomUserDetailsService;
 import org.spring.dojooo.global.ErrorCode;
 import org.spring.dojooo.global.exception.ApiException;

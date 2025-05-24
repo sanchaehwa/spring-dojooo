@@ -5,7 +5,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.spring.dojooo.auth.Redis.RedisUtil;
+import org.spring.dojooo.global.Redis.RedisUtil;
 import org.spring.dojooo.auth.jwt.config.JWTUtil;
 import org.spring.dojooo.auth.jwt.dto.CustomUserDetails;
 import org.spring.dojooo.global.ErrorCode;
