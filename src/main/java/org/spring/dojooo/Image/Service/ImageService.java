@@ -53,32 +53,6 @@ public class ImageService {
             throw new RuntimeException("S3 업로드 실패", e);
         }
 
-        // 프로필 갱신
-        Profile oldProfile = user.getProfile();
-        if (oldProfile == null) {
-            user.updateProfile(Profile.builder()
-                    .profileImage(uploadedUrl)
-                    .introduction("")
-                    .build());
-            log.info("새로운 프로필 생성됨.");
-        } else {
-            Profile updatedProfile = oldProfile.toBuilder()
-                    .profileImage(uploadedUrl)
-                    .build();
-            user.updateProfile(updatedProfile);
-            log.info("기존 프로필 이미지 갱신됨.");
-        }
-
-        // 이미지 엔티티 저장
-        Image image = Image.builder()
-                .fileName(file.getOriginalFilename())
-                .url(uploadedUrl)
-                .user(user)
-                .build();
-
-        imageRepository.save(image);
-        log.info("이미지 DB 저장 완료. filename={}, userId={}", file.getOriginalFilename(), user.getId());
-
-        return uploadedUrl;
+        return uploadedUrl; //S3 이미지 업로드만 하고 url 반환
     }
 }
