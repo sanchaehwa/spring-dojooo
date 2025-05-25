@@ -35,7 +35,7 @@ public class UserProfileService {
     @Transactional
     public void editProfile(Long userId, ProfileUpdateRequest profileEditRequest, Authentication authentication) { Long currentUserId = getCurrentUserId(authentication);
         if (!userId.equals(currentUserId)) {
-            throw new IllegalArgumentException("본인의 프로필만 저장할 수 있습니다");
+            throw new IllegalArgumentException("본인의 프로필만 수정할 수 있습니다");
         }
 
         User user = findUserById(userId);
@@ -69,7 +69,7 @@ public class UserProfileService {
     public void saveProfile(Long userId, ProfileSaveRequest profileSaveRequest, Authentication authentication) {
         Long currentUserId = getCurrentUserId(authentication);
         if (!userId.equals(currentUserId)) {
-            throw new IllegalArgumentException("본인의 프로필만 저장할 수 있습니다");
+            throw new IllegalArgumentException("본인의 프로필만 등록할 수 있습니다");
         }
 
         User user = findUserById(userId);
