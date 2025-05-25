@@ -25,12 +25,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "닉네임을 입력해주세요")
     @Column(nullable = false, unique = true, length = 45)
     private String nickname;
 
-    @NotBlank(message ="이메일을 입력해주세요")
-    @Email(message = "이메일을 올바르게 입력해주세요") //이메일 형식 검증
     @Column(nullable = false, unique = true, length = 50)
     private String email;
 
