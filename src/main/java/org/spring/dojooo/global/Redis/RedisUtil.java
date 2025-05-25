@@ -65,19 +65,6 @@ public class RedisUtil {
         Boolean deleted = redisTemplate.delete("refresh:" + email);
         log.info("Redis 삭제 - user: {}. refreshToken: {}", email,deleted);
     }
-    //회원 정보 수정 임시 저장
-    public void tempUserSelfIntroduction(String email, String getSelfIntroduction) {
-        try {
-            String key = "tempUserSelfIntroduction:" + email;
-            String value = objectMapper.writeValueAsString(getSelfIntroduction); // 객체 → JSON 문자열
-            Duration ttl = Duration.ofMinutes(30);
-            log.info("Redis 저장시도 - key: {}, value: {}", key, value);
-            redisTemplate.opsForValue().set(key, value, ttl); // 30분
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("JSON 변환 실패", e);
-        }
-    }
-
 
 
 }
