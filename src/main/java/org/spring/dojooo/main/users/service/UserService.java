@@ -7,10 +7,8 @@ import org.spring.dojooo.global.Redis.RedisUtil;
 import org.spring.dojooo.auth.jwt.security.CustomUserDetailsService;
 import org.spring.dojooo.global.ErrorCode;
 import org.spring.dojooo.global.exception.ApiException;
-import org.spring.dojooo.main.users.domain.Profile;
 import org.spring.dojooo.main.users.domain.User;
 
-import org.spring.dojooo.main.users.dto.ProfileEditRequest;
 import org.spring.dojooo.main.users.dto.UserSignUpRequest;
 import org.spring.dojooo.main.users.dto.UserUpdateRequest;
 import org.spring.dojooo.main.users.exception.DuplicateUserException;
@@ -20,8 +18,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor

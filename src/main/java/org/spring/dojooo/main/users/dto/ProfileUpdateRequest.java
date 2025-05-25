@@ -5,17 +5,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProfileEditRequest {
+public class ProfileUpdateRequest {
 
     //자기소개
     private String introduction;
 
-    private MultipartFile profileImage;
+    private String profileImageUrl;
 
 }

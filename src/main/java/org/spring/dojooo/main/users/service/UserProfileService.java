@@ -1,5 +1,6 @@
 package org.spring.dojooo.main.users.service;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.spring.dojooo.auth.jwt.dto.CustomUserDetails;
 import org.spring.dojooo.global.ErrorCode;
 import org.spring.dojooo.global.S3.S3FileService;
@@ -7,20 +8,20 @@ import org.spring.dojooo.global.exception.NotFoundException;
 import org.spring.dojooo.main.users.domain.Profile;
 import org.spring.dojooo.main.users.domain.User;
 import org.spring.dojooo.main.users.dto.ProfileDetails;
-import org.spring.dojooo.main.users.dto.ProfileEditRequest;
+import org.spring.dojooo.main.users.dto.ProfileUpdateRequest;
 import org.spring.dojooo.main.users.dto.ProfileSaveRequest;
 import org.spring.dojooo.main.users.repository.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserProfileService {
 
     private final UserRepository userRepository;
-    private final S3FileService s3Uploader;
+    private static final String DEFAULT_PROFILE_IMAGE = "https://dojooo.s3.ap-northeast-2.amazonaws.com/profile/80aefad7-3_%E1%84%80%E1%85%B5%E1%84%87%E1%85%A9%E1%86%AB%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%91%E1%85%B5%E1%86%AF.jpg";
 
     // 프로필 조회
     @Transactional(readOnly = true)
@@ -32,41 +33,34 @@ public class UserProfileService {
     }
 
     @Transactional
-    public void editProfile(Long userId, ProfileEditRequest profileEditRequest, Authentication authentication) {
-        Long currentUserId = getCurrentUserId(authentication);
+    public void editProfile(Long userId, ProfileUpdateRequest profileEditRequest, Authentication authentication) { Long currentUserId = getCurrentUserId(authentication);
         if (!userId.equals(currentUserId)) {
-            throw new IllegalArgumentException("본인의 프로필만 수정할 수 있습니다.");
+            throw new IllegalArgumentException("본인의 프로필만 저장할 수 있습니다");
         }
+
         User user = findUserById(userId);
-        Profile existingProfile = user.getProfile();
+        Profile existingProfile = user.getProfile(); //기존(/users/profile/save) 프로필
 
-        String updatedImageUrl = null;
-        String updatedIntro = null;
+        String getImageUrl = profileEditRequest.getProfileImageUrl();
+        String getIntroduction = profileEditRequest.getIntroduction();
 
-        if (existingProfile != null) {
-            updatedImageUrl = existingProfile.getProfileImage();
-            updatedIntro = existingProfile.getIntroduction();
-        }
+        //Null 허용 (사용자가 이미지만, 자기소개만 수정하고 싶을수도 있으니깐)
+        String updatedImageUrl = (getImageUrl != null && !getImageUrl.isBlank())
+                ? getImageUrl
+                : (existingProfile != null && existingProfile.getProfileImage() != null && !existingProfile.getProfileImage().isBlank())
+                ? existingProfile.getProfileImage()
+                : DEFAULT_PROFILE_IMAGE;
 
-        MultipartFile newImage = profileEditRequest.getProfileImage();
-        if (newImage != null && !newImage.isEmpty()) {
-            if (existingProfile != null && existingProfile.getProfileImage() != null && !existingProfile.getProfileImage().isBlank()) {
-                s3Uploader.deleteImageFromS3(existingProfile.getProfileImage());
-            }
-            updatedImageUrl = s3Uploader.upload(newImage, "profile");
-        }
+        String updatedIntroduction = (getIntroduction != null) ? getIntroduction : (existingProfile != null ? existingProfile.getIntroduction() : null);
 
-        String newIntro = profileEditRequest.getIntroduction();
-        if (newIntro != null) {
-            updatedIntro = newIntro;
-        }
 
-        Profile updatedProfile = Profile.builder()
+        Profile updatedprofile = Profile.builder()
                 .profileImage(updatedImageUrl)
-                .introduction(updatedIntro)
+                .introduction(updatedIntroduction)
                 .build();
-
-        user.updateProfile(updatedProfile);
+        //수정한 내용 반영
+        user.updateProfile(updatedprofile);
+        log.info("User {} updated profile. New image: {}, New intro: {}", userId, updatedImageUrl, updatedIntroduction);
     }
 
 
@@ -79,6 +73,11 @@ public class UserProfileService {
         }
 
         User user = findUserById(userId);
+
+        String imageUrl = profileSaveRequest.getProfileImageUrl();
+        if (imageUrl == null || imageUrl.isBlank()) {
+            imageUrl = DEFAULT_PROFILE_IMAGE;
+        }
 
         Profile profile = Profile.builder()
                 .profileImage(profileSaveRequest.getProfileImageUrl())

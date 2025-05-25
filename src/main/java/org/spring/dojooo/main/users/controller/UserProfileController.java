@@ -5,25 +5,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.spring.dojooo.auth.jwt.dto.CustomUserDetails;
-import org.spring.dojooo.global.ErrorCode;
-import org.spring.dojooo.global.exception.ApiException;
 import org.spring.dojooo.global.response.ApiResponse;
 import org.spring.dojooo.main.users.dto.ProfileDetails;
-import org.spring.dojooo.main.users.dto.ProfileEditRequest;
+import org.spring.dojooo.main.users.dto.ProfileUpdateRequest;
 import org.spring.dojooo.main.users.dto.ProfileSaveRequest;
-import org.spring.dojooo.main.users.exception.WrongUserEditException;
-import org.spring.dojooo.main.users.repository.UserRepository;
 import org.spring.dojooo.main.users.service.UserProfileService;
-import org.spring.dojooo.main.users.service.UserService;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.lang.annotation.Repeatable;
 
 
 @Slf4j
@@ -33,9 +22,8 @@ import java.lang.annotation.Repeatable;
 public class UserProfileController {
 
     private final UserProfileService userProfileService;
-    private final UserService userService;
 
-    //아무것도 등록안한 상태이면 -> (기본)프로필 사진 , 회원가입시 등록했던 이름, (빈칸)자기소개
+    //아무것도 등록안한 상태이면 -> , 회원가입시 등록했던 이름, (빈칸)자기소개
     @Operation(summary = "유저 페이지 프로필 조회", description = "해당 유저의 프로필 정보를 조회합니다")
     @GetMapping("/{userId}")
     public ResponseEntity<ApiResponse<ProfileDetails>> userProfile(@PathVariable Long userId, Authentication authentication) {
@@ -43,16 +31,14 @@ public class UserProfileController {
         return ResponseEntity.ok(ApiResponse.ok(profileDetails));
     }
 
-    @Operation(summary = "유저 페이지 프로필 수정", description = "해당 유저의 자기소개를 수정합니다")
-    @PatchMapping(value = "/edit/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "유저 페이지 프로필 수정", description = "이미지 또는 자기소개를 수정합니다")
+    @PatchMapping(value = "/edit/{userId}")
     public ResponseEntity<ApiResponse<ProfileDetails>> editProfile(
             @PathVariable Long userId,
-            @RequestPart(value = "introduction", required = false) String introduction,
-            @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
+            @RequestBody ProfileUpdateRequest profileEditRequest,
             Authentication authentication) {
 
-        ProfileEditRequest request = new ProfileEditRequest(introduction, profileImage);
-        userProfileService.editProfile(userId, request, authentication);
+        userProfileService.editProfile(userId, profileEditRequest, authentication);
         ProfileDetails updated = userProfileService.getProfile(userId, authentication);
         return ResponseEntity.ok(ApiResponse.ok(updated));
     }
