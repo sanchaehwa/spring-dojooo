@@ -39,6 +39,8 @@ public enum ErrorCode {
     PUT_OBJECT_EXCEPTION("S3에 파일 업로드 중 오류가 발생했습니다", 500),
     IO_EXCEPTION_ON_IMAGE_DELETE("이미지 삭제 중 입출력 오류가 발생했습니다", 500),
 
+    //프로필
+    WRONG_USER_EDIT("본인의 프로필만 수정할 수 있습니다.",403),
     //임시저장
     UPDATE_TIMEOUT("회원 정보 수정 유효 시간이 초과되었습니다",500);
 

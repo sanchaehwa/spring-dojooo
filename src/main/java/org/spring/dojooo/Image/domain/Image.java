@@ -30,7 +30,5 @@ public class Image {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public void updateUrl(String url) {
-        this.url = url;
     }
-}
+

@@ -2,6 +2,7 @@ package org.spring.dojooo.main.users.service;
 
 
 import lombok.RequiredArgsConstructor;
+import org.spring.dojooo.Image.Service.ImageService;
 import org.spring.dojooo.global.Redis.RedisUtil;
 import org.spring.dojooo.auth.jwt.security.CustomUserDetailsService;
 import org.spring.dojooo.global.ErrorCode;
@@ -26,6 +27,7 @@ public class UserService {
     private final RedisUtil redisUtil;
     private final RedisTemplate<String, String> redisTemplate;
     private final CustomUserDetailsService customUserDetailsService;
+    private final ImageService imageService;
 
     @Transactional
     public Long saveUser(UserSignUpRequest userSignUpRequest) {
@@ -84,6 +86,7 @@ public class UserService {
         User user = findActiveUser(id); //회원 조회
         //refresh Token 삭제
         redisUtil.deleteRefreshToken( user.getEmail());
+        user.deleteUser(); //논리삭제 - is_deleted = true
         return user.getId();
     }
 

@@ -19,6 +19,7 @@ import java.util.Arrays;
 @AllArgsConstructor
 
 public class User {
+
     @Id
     @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,13 +48,22 @@ public class User {
     @Column(nullable = false, columnDefinition = "TINYINT default 0")
     private boolean isDeleted;
 
+    @Embedded
+    private Profile profile;
+
+    //프로필 이미지 등록하지않아도, 기본이미지가 보이게, 프로필 이미지 새로등록하면 기본이미지에서 바뀌는 로직으로
+    private static final String DEFAULT_PROFILE_IMAGE = "https://dojooo.s3.ap-northeast-2.amazonaws.com/profile/80aefad7-3_기본프로필.jpg";
+
+
+
     @Builder
-    public User(String nickname, String email, String password) {
+    public User(String nickname, String email, String password,Profile profile) {
         this.nickname = nickname;
         this.email = email;
         this.password = password;
         this.role = Role.USER;
         this.isDeleted = false;
+        this.profile = new Profile(DEFAULT_PROFILE_IMAGE,null); //profileimage = null, introduction = null
 
     }
     //수정 가능 항목
@@ -74,6 +84,8 @@ public class User {
                     .orElseThrow(() -> new IllegalArgumentException(ErrorCode.INVALID_INPUT)); //예외처리
         }
     }
+
+
     //회원 정보 수정
     public void updateUser(UserUpdateRequest userUpdateRequest) {
         switch(UpdateInfo.getUpdateOption(userUpdateRequest.getOption())){
@@ -91,9 +103,11 @@ public class User {
         this.isDeleted = true;
     }
 
+    //프로필 업로드
+    public void updateProfile(Profile profile) {
+        this.profile = profile;
+    }
+
+
 
 }
-/*
-Email 수정 -> Email 인증 -> 인증완료 -> 수정 [Spring에 이메일을 보낼수있어야함]
-Nickname -> 이미 존재하는 Nickname 인지 확인
- */

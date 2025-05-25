@@ -7,6 +7,7 @@ import org.spring.dojooo.global.exception.NotFoundException;
 import org.spring.dojooo.global.exception.S3Exception;
 import org.spring.dojooo.main.users.exception.DuplicateUserException;
 import org.spring.dojooo.main.users.exception.NotFoundUserException;
+import org.spring.dojooo.main.users.exception.WrongUserEditException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -67,6 +68,12 @@ public class GlobalExceptionHandler {
         log.error("handleS3Exception", exception);
         ErrorResponse errorResponse = ErrorResponse.of(exception.getErrorCode());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(WrongUserEditException.class)
+    public ResponseEntity<ErrorResponse> handleWrongUserEditException(WrongUserEditException exception) {
+        log.error("handleWrongUserEditException", exception);
+        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.WRONG_USER_EDIT);
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
     }
 
 }
