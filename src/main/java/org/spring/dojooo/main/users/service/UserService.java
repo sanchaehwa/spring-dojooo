@@ -93,28 +93,6 @@ public class UserService {
         user.deleteUser(); //논리삭제 - is_deleted = true
         return user.getId();
     }
-    //프로필 수정
-    @Transactional
-    public User editProfile(Long id, ProfileEditRequest profileEditRequest) throws IOException {
-        User user = userRepository.findByIdAndIsDeletedFalse(id)
-                .orElseThrow(() -> new NotFoundUserException(ErrorCode.NOT_FOUND_USER));
-
-        String imageUrl = user.getProfile().getProfileImage();
-
-        // 이미지 파일이 존재하면 S3에 업로드 후 갱신
-        if (profileEditRequest.getProfileImage() != null && !profileEditRequest.getProfileImage().isEmpty()) {
-            imageUrl = imageService.uploadProfileImage(profileEditRequest.getProfileImage(), user.getEmail());
-        }
-
-        Profile updatedProfile = Profile.builder()
-                .profileImage(imageUrl)
-                .introduction(profileEditRequest.getIntroduction())
-                .build();
-
-        user.updateProfile(updatedProfile);
-        return user;
-    }
-
 
     //DB에 존재하는 회원인지 아닌지 확인(회원 조회)
     @Transactional(readOnly = true)

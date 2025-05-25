@@ -94,13 +94,12 @@ public class User {
     public void deleteUser(){
         this.isDeleted = true;
     }
+
+    //프로필 업로드
     public void updateProfile(Profile profile) {
         this.profile = profile;
     }
 
 
+
 }
-/*
-Email 수정 -> Email 인증 -> 인증완료 -> 수정 [Spring에 이메일을 보낼수있어야함]
-Nickname -> 이미 존재하는 Nickname 인지 확인
- */

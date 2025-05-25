@@ -1,21 +1,16 @@
 package org.spring.dojooo.main.users.dto;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProfileEditRequest {
-
-    //자기소개
+public class ProfileSaveRequest {
     private String introduction;
-
-    private MultipartFile profileImage;
+    private String profileImageUrl;
 
 }
