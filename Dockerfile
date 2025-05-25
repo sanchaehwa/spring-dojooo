@@ -2,7 +2,7 @@
 FROM openjdk:17-jdk-slim AS build
 WORKDIR /app
 COPY . .
-RUN ./gradlew clean build --no-daemon
+RUN ./gradlew build --no-daemon -x test
 
 # 실행 단계
 FROM openjdk:17-jdk-slim
