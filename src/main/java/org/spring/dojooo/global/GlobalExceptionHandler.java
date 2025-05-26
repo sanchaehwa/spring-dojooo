@@ -7,6 +7,7 @@ import org.spring.dojooo.global.exception.NotFoundException;
 import org.spring.dojooo.global.exception.S3Exception;
 import org.spring.dojooo.main.users.exception.DuplicateUserException;
 import org.spring.dojooo.main.users.exception.NotFoundUserException;
+import org.spring.dojooo.main.users.exception.NotUserEqualsCurrentUserException;
 import org.spring.dojooo.main.users.exception.WrongUserEditException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -73,6 +74,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleWrongUserEditException(WrongUserEditException exception) {
         log.error("handleWrongUserEditException", exception);
         ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.WRONG_USER_EDIT);
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+    }
+    @ExceptionHandler(NotUserEqualsCurrentUserException.class)
+    public ResponseEntity<ErrorResponse> handleNotUserEqualsCurrentUserException(NotUserEqualsCurrentUserException exception) {
+        log.error("handleNotUserEqualsCurrentUserException", exception);
+        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.NOT_USER_EQUALS_CURRENTUSER);
         return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
     }
 

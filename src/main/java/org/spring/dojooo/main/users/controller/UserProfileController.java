@@ -54,4 +54,11 @@ public class UserProfileController {
         ProfileDetails profileDetails = userProfileService.getProfile(userId, authentication);
         return ResponseEntity.ok(ApiResponse.ok(profileDetails));
     }
+    @Operation(summary = "유저 페이지 프로필 초기화", description = "프로필이미지는 기본이미지로 설정되고, 자기소개는 초기화됩니다")
+    @PostMapping("/reset/{userId}")
+    public ResponseEntity<ApiResponse<ProfileDetails>> resetProfile(@PathVariable Long userId, Authentication authentication){
+        userProfileService.resetrofile(userId, authentication);
+        ProfileDetails profileDetails = userProfileService.getProfile(userId, authentication);
+        return ResponseEntity.ok(ApiResponse.ok(profileDetails));
+    }
 }
