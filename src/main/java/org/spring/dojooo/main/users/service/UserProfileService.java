@@ -3,6 +3,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.spring.dojooo.auth.jwt.dto.CustomUserDetails;
 import org.spring.dojooo.global.ErrorCode;
+import org.spring.dojooo.global.S3.S3FileService;
 import org.spring.dojooo.global.exception.NotFoundException;
 import org.spring.dojooo.main.contents.domain.Memo.Tag;
 import org.spring.dojooo.main.users.domain.Profile;
@@ -26,6 +27,7 @@ public class UserProfileService {
 
     private final UserRepository userRepository;
     private static final String DEFAULT_PROFILE_IMAGE = "https://dojooo.s3.ap-northeast-2.amazonaws.com/profile/80aefad7-3_%E1%84%80%E1%85%B5%E1%84%87%E1%85%A9%E1%86%AB%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%91%E1%85%B5%E1%86%AF.jpg";
+    private final S3FileService s3FileService;
 
     // 프로필 조회
     @Transactional(readOnly = true)
@@ -93,7 +95,6 @@ public class UserProfileService {
         if (imageUrl == null || imageUrl.isBlank()) {
             imageUrl = DEFAULT_PROFILE_IMAGE;
         }
-
         Profile profile = Profile.builder()
                 .profileImage(profileSaveRequest.getProfileImageUrl())
                 .introduction(profileSaveRequest.getIntroduction())
@@ -124,9 +125,20 @@ public class UserProfileService {
 
     //프로필 초기화
     @Transactional
-    public void resetrofile(Long userId, Authentication authentication){
+    public void resetProfile(Long userId, Authentication authentication){
         userEqualsCurrentUser(getCurrentUserId(authentication), userId);
         User user = findUserById(userId);
+        //기존 이미지가 Default 이미지(기본 이미지) 가 아닌 등록한 이미지인경우 S3에 등록이미지 제거
+        String currentImageUrl = user.getProfile().getProfileImage();
+        if (currentImageUrl != null && !DEFAULT_PROFILE_IMAGE.equals(currentImageUrl)) {
+            try{
+                s3FileService.deleteImageFromS3(currentImageUrl);
+                log.info("User {} delete profile image from s3", user.getId());
+            }catch(Exception e){
+                log.warn("Failed to delete profile image from s3: {}", currentImageUrl);
+            }
+        }
+
         Profile resetProfile = Profile.builder()
                 .profileImage(DEFAULT_PROFILE_IMAGE)
                 .introduction(null)
