@@ -38,6 +38,7 @@ public enum ErrorCode {
     NO_FILE_EXTENTION("파일 확장자가 존재하지않습니다",400),
     PUT_OBJECT_EXCEPTION("S3에 파일 업로드 중 오류가 발생했습니다", 500),
     IO_EXCEPTION_ON_IMAGE_DELETE("이미지 삭제 중 입출력 오류가 발생했습니다", 500),
+    NOT_USER_EQUALS_CURRENTUSER("본인 프로필만 수정 후 저장할 수 있습니다",403),
 
     //프로필
     WRONG_USER_EDIT("본인의 프로필만 수정할 수 있습니다.",403),

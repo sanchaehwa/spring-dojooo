@@ -1,16 +1,16 @@
 package org.spring.dojooo.main.users.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 import lombok.*;
 import org.spring.dojooo.global.ErrorCode;
+import org.spring.dojooo.main.contents.domain.Memo.Tag;
 import org.spring.dojooo.main.users.dto.UserUpdateRequest;
 import org.spring.dojooo.main.users.exception.IllegalArgumentException;
 import org.spring.dojooo.main.users.model.Role;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 
-import java.util.Arrays;
+import java.util.*;
 
 @Getter
 @Entity
@@ -25,12 +25,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "닉네임을 입력해주세요")
     @Column(nullable = false, unique = true, length = 45)
     private String nickname;
 
-    @NotBlank(message ="이메일을 입력해주세요")
-    @Email(message = "이메일을 올바르게 입력해주세요") //이메일 형식 검증
     @Column(nullable = false, unique = true, length = 50)
     private String email;
 
@@ -50,6 +47,11 @@ public class User {
 
     @Embedded
     private Profile profile;
+
+    //관심사 테그(프로필에서표사) - 유저는 여러개의 테그를 가질수있다.
+    @ElementCollection
+    @CollectionTable(name="user_tags", joinColumns = @JoinColumn(name="user_id"))
+    private List<Tag> tags = new ArrayList<>();
 
     //프로필 이미지 등록하지않아도, 기본이미지가 보이게, 프로필 이미지 새로등록하면 기본이미지에서 바뀌는 로직으로
     private static final String DEFAULT_PROFILE_IMAGE = "https://dojooo.s3.ap-northeast-2.amazonaws.com/profile/80aefad7-3_기본프로필.jpg";
@@ -107,7 +109,10 @@ public class User {
     public void updateProfile(Profile profile) {
         this.profile = profile;
     }
-
-
+    //Setter 대신 - tag
+    public void replaceTags(List<Tag> updatedTags) {
+        this.tags.clear();
+        this.tags.addAll(updatedTags);
+    }
 
 }

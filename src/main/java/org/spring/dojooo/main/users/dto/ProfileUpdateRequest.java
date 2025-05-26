@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,5 +18,7 @@ public class ProfileUpdateRequest {
     private String introduction;
 
     private String profileImageUrl;
+
+    private List<String> tagNames;
 
 }
