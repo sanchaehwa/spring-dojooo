@@ -42,7 +42,7 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
-    @Column(nullable = false, columnDefinition = "TINYINT default 0")
+    @Column(columnDefinition = "TINYINT default 0")
     private boolean isDeleted;
 
     @Embedded

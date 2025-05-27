@@ -42,8 +42,9 @@ public enum ErrorCode {
 
     //프로필
     WRONG_USER_EDIT("본인의 프로필만 수정할 수 있습니다.",403),
-    //임시저장
-    UPDATE_TIMEOUT("회원 정보 수정 유효 시간이 초과되었습니다",500);
+
+    //메모
+    DUPLICAT_MEMO_HEADER("이미 사용중인 제목입니다. 다른 제목으로 작성해주세요",400);
 
 
 
