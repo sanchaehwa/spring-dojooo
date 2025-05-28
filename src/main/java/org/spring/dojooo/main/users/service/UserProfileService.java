@@ -5,7 +5,7 @@ import org.spring.dojooo.auth.jwt.dto.CustomUserDetails;
 import org.spring.dojooo.global.ErrorCode;
 import org.spring.dojooo.global.S3.S3FileService;
 import org.spring.dojooo.global.exception.NotFoundException;
-import org.spring.dojooo.main.contents.domain.Memo.Tag;
+import org.spring.dojooo.global.domain.Tag;
 import org.spring.dojooo.main.users.domain.Profile;
 import org.spring.dojooo.main.users.domain.User;
 import org.spring.dojooo.main.users.dto.ProfileDetails;
@@ -57,20 +57,6 @@ public class UserProfileService {
                 : DEFAULT_PROFILE_IMAGE;
 
         String updatedIntroduction = (getIntroduction != null) ? getIntroduction : (existingProfile != null ? existingProfile.getIntroduction() : null);
-
-        //태그 보여줄 목록 갱신
-        List<String> selectedTagNames = profileEditRequest.getTagNames();
-        //0 ~ 5개 선택할수있음
-        if(selectedTagNames != null && selectedTagNames.size() > 5) {
-            throw new IllegalArgumentException("최대 5개의 테그만 선택할 수 있습니다. ");
-        }
-        List<Tag> updatedTags = user.getTags().stream()
-                .map(tag -> tag.withShowOnProfile(
-                        selectedTagNames != null && selectedTagNames.contains(tag.getTagName())
-                ))
-                .collect(Collectors.toList());
-        user.replaceTags(updatedTags);
-
 
         Profile updatedprofile = Profile.builder()
                 .profileImage(updatedImageUrl)
