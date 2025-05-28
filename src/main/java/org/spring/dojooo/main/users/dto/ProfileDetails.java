@@ -2,7 +2,6 @@ package org.spring.dojooo.main.users.dto;
 
 import lombok.Builder;
 import lombok.Getter;
-import org.spring.dojooo.main.contents.domain.Memo.Tag;
 import org.spring.dojooo.main.users.domain.Profile;
 import org.spring.dojooo.main.users.domain.User;
 
@@ -30,12 +29,6 @@ public class ProfileDetails {
                 .map(Profile::getIntroduction)
                 .orElse("");
 
-        List<String> tagNames = Optional.ofNullable(user.getTags())
-                .orElse(List.of()) //null이면 빈 리스트 처리
-                .stream()
-                .filter(Tag::isShowOnProfile) //프로필에 보여질 테그만
-                .map(Tag::getTagName) //Tag 객체가 아니라, Tag의 이름만 추출
-                .toList();
 
         return ProfileDetails.builder()
                 .id(user.getId())
@@ -43,7 +36,6 @@ public class ProfileDetails {
                 .nickname(user.getNickname())
                 .introduction(introduction)
                 .isMine(isOwner)
-                .tags(tagNames)
                 .build();
     }
     }
