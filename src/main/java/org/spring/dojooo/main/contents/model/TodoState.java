@@ -5,6 +5,4 @@ import lombok.*;
 @AllArgsConstructor
 public enum TodoState {
     TODO, PROGRESS,DONE
-
-
 }
