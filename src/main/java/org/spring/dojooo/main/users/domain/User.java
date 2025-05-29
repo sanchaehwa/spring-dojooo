@@ -47,10 +47,8 @@ public class User {
     @Embedded
     private Profile profile;
 
-    //관심사 테그(프로필에서표사) - 유저는 여러개의 테그를 가질수있다.
-//    @ElementCollection
-//    @CollectionTable(name="user_tags", joinColumns = @JoinColumn(name="user_id"))
-//    //rivate List<Tag> tags = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "user")
+    private List<ProfileTag> profileTags = new ArrayList<>();
 
     //프로필 이미지 등록하지않아도, 기본이미지가 보이게, 프로필 이미지 새로등록하면 기본이미지에서 바뀌는 로직으로
     private static final String DEFAULT_PROFILE_IMAGE = "https://dojooo.s3.ap-northeast-2.amazonaws.com/profile/80aefad7-3_기본프로필.jpg";
@@ -58,12 +56,12 @@ public class User {
 
 
     @Builder
-    public User(String nickname, String email, String password,Profile profile) {
+    public User(String nickname, String email,Boolean isDeleted, String password,Profile profile) {
         this.nickname = nickname;
         this.email = email;
         this.password = password;
         this.role = Role.USER;
-        this.isDeleted = false;
+        this.isDeleted = isDeleted != null ? isDeleted : false;
         this.profile = new Profile(DEFAULT_PROFILE_IMAGE,null); //profileimage = null, introduction = null
 
     }
@@ -108,10 +106,6 @@ public class User {
     public void updateProfile(Profile profile) {
         this.profile = profile;
     }
-//    //Setter 대신 - tag
-//    public void replaceTags(List<Tag> updatedTags) {
-//        this.tags.clear();
-//        this.tags.addAll(updatedTags);
-//    }
+
 
 }

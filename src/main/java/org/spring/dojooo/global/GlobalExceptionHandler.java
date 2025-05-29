@@ -3,17 +3,18 @@ package org.spring.dojooo.global;
 import lombok.extern.slf4j.Slf4j;
 import org.spring.dojooo.auth.jwt.exception.InvalidTokenException;
 import org.spring.dojooo.global.exception.ApiException;
+import org.spring.dojooo.global.exception.DuplicateException;
 import org.spring.dojooo.global.exception.NotFoundException;
 import org.spring.dojooo.global.exception.S3Exception;
-import org.spring.dojooo.main.users.exception.DuplicateUserException;
-import org.spring.dojooo.main.users.exception.NotFoundUserException;
-import org.spring.dojooo.main.users.exception.NotUserEqualsCurrentUserException;
-import org.spring.dojooo.main.users.exception.WrongUserEditException;
+import org.spring.dojooo.main.users.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.lang.IllegalArgumentException;
+
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -39,7 +40,7 @@ public class GlobalExceptionHandler {
                 ErrorCode.INVALID_INPUT, exception.getBindingResult());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
-    @ExceptionHandler(NotFoundUserException.class)
+    @ExceptionHandler({NotFoundUserException.class, NotFoundTagException.class})
     public ResponseEntity<ErrorResponse> handleNotFound(NotFoundException exception) {
         log.error("handleNotFoundException", exception);
         ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.NOT_FOUND_RESOURCE);
@@ -52,8 +53,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(DuplicateUserException.class)
-    public ResponseEntity<ErrorResponse> handleDuplicateUserException(DuplicateUserException exception) {
+    @ExceptionHandler({DuplicateUserException.class, DuplicateTagException.class})
+    public ResponseEntity<ErrorResponse> handleDuplicateException(DuplicateException exception) {
         log.error("handleDuplicateUserException", exception);
         ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.CONFLICT_ERROR);
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);

@@ -18,7 +18,7 @@ public class CheckList {
     @Column(name="checklist_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="user_id")
     private User user;
 
