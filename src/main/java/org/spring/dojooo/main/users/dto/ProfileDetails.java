@@ -1,7 +1,6 @@
 package org.spring.dojooo.main.users.dto;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 import org.spring.dojooo.main.users.domain.Profile;
 import org.spring.dojooo.main.users.domain.User;
 

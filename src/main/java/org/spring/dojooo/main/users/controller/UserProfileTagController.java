@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.spring.dojooo.global.response.ApiResponse;
 import org.spring.dojooo.main.users.domain.ProfileTag;
 import org.spring.dojooo.main.users.dto.ProfileTagRequest;
+import org.spring.dojooo.main.users.dto.ProfileTagUpdateRequest;
 import org.spring.dojooo.main.users.dto.TagDetails;
 import org.spring.dojooo.main.users.dto.TagDetailsList;
 import org.spring.dojooo.main.users.service.ProfileTagService;
@@ -39,14 +40,14 @@ public class UserProfileTagController {
         return ResponseEntity.ok(ApiResponse.ok(response));
 
     }
-//    @Operation(summary = "설정한 테그 수정", description = "프로필에 등록하기위해 설정한 테그를 수정합니다")
-//    @PatchMapping("/edit/{userId}")
-//    public ResponseEntity<ApiResponse<TagDetails>>editTag(@PathVariable Long userId, @RequestBody ProfileTagRequest profileTagRequest, Authentication authentication) {
-//        ProfileTag updateTag = profileTagService.updateTag(userId, profileTagRequest, authentication);
-//        TagDetails response = TagDetails.from(updateTag.getUser(), updateTag);
-//        return ResponseEntity.ok(ApiResponse.ok(response));
-//
-//
+    @Operation(summary = "설정한 테그 수정", description = "프로필에 등록하기위해 설정한 테그를 수정합니다")
+    @PatchMapping("/edit/{userId}")
+    public ResponseEntity<ApiResponse<TagDetails>>editTag(@PathVariable Long userId, @RequestBody ProfileTagUpdateRequest profileTagUpdateRequest, Authentication authentication) {
+        ProfileTag updateTag = profileTagService.updateTag(userId, profileTagUpdateRequest, authentication);
+        TagDetails response = TagDetails.from(updateTag.getUser(), updateTag);
+        return ResponseEntity.ok(ApiResponse.ok(response));
+
+    }
 
     @Operation(summary = "테그 삭제",description = "프로필에 등록하기위해 설정한 테그를 삭제합니다")
     @DeleteMapping("/delete/{userId}")

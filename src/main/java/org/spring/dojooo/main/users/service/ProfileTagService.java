@@ -38,7 +38,7 @@ public class ProfileTagService {
     }
     //테그 저장(처음)
     @Transactional
-    public ProfileTag saveTag(Long userId, ProfileTagRequest profileTagUpdateRequest, Authentication authentication) {
+    public ProfileTag saveTag(Long userId, ProfileTagRequest profileTagRequest, Authentication authentication) {
         //권한 체크
         userEqualsCurrentUser(getCurrentUserId(authentication), userId);
 
@@ -46,41 +46,46 @@ public class ProfileTagService {
         User user  = userRepository.findByIdAndIsDeletedFalse(userId).orElseThrow(() -> new NotFoundUserException(ErrorCode.NOT_FOUND_USER));
 
         //중복확인 (같은 이름의 테그, 같은 유저, 이미 프로필 등록된 경우)
-        duplicateTag(userId,profileTagUpdateRequest, authentication);
+        duplicateTag(userId,profileTagRequest, authentication);
         //테그 10자 제한
-        checkTagLength(profileTagUpdateRequest.getTagName());
+        checkTagLength(profileTagRequest.getTagName());
         //이미 있는 테그인지 아니면 생성
-        Tag tag = tagRepository.findByTagNameAndUser(profileTagUpdateRequest.getTagName(), user)
-                    .orElseGet(() -> tagRepository.save(new Tag(profileTagUpdateRequest.getTagName(), user)));
+        Tag tag = tagRepository.findByTagNameAndUser(profileTagRequest.getTagName(), user)
+                    .orElseGet(() -> tagRepository.save(new Tag(profileTagRequest.getTagName(), user)));
         ProfileTag profileTag =ProfileTag.builder()
                  .user(user)
                  .tag(tag)
-                 .colorCode(profileTagUpdateRequest.getColorcode())
+                 .colorCode(profileTagRequest.getColorcode())
                  .showOnProfile(false)
                  .isDeleted(false)
                  .build();
         return profileTagReposiotry.save(profileTag);
     }
-//    //태그 수정
-//    @Transactional
-//    public ProfileTag updateTag(Long userId, ProfileTagRequest profileTagRequest, Authentication authentication) {
-//        userEqualsCurrentUser(getCurrentUserId(authentication), userId);
-//
-//        User user  = userRepository.findByIdAndIsDeletedFalse(userId).orElseThrow(() -> new NotFoundUserException(ErrorCode.NOT_FOUND_USER));
-//
-//
-//
-//        ProfileTag profileTag = profileTagReposiotry
-//                .findByUserAndTag_TagNameAndIsDeletedFalse(user, profileTagRequest.getOriginalTagName())
-//                .orElseThrow(() -> new NotFoundTagException(ErrorCode.NOTFOUND_TAG_EXCEPTION));
-//        checkTagLength(profileTagRequest.getTagName());
-//
-//        profileTag.getTag().updateTagName(profileTagRequest.getTagName());
-//
-//        profileTag.updateColorCode(profileTagRequest.getColorcode());
-//
-//        return profileTag;
-//    }
+    //태그 수정
+    @Transactional
+    public ProfileTag updateTag(Long userId, ProfileTagUpdateRequest profileTagUpdateRequest, Authentication authentication) {
+        userEqualsCurrentUser(getCurrentUserId(authentication), userId);
+
+        User user  = userRepository.findByIdAndIsDeletedFalse(userId).orElseThrow(() -> new NotFoundUserException(ErrorCode.NOT_FOUND_USER));
+
+
+        ProfileTag profileTag = profileTagReposiotry
+                .findByUserAndTag_TagNameAndIsDeletedFalse(user, profileTagUpdateRequest.getOriginalTagName())
+                .orElseThrow(() -> new NotFoundTagException(ErrorCode.NOTFOUND_TAG_EXCEPTION));
+
+        //테그 이름
+        if (profileTagUpdateRequest.getNewTagName() != null && !profileTagUpdateRequest.getNewTagName().isBlank()) {
+            checkTagLength(profileTagUpdateRequest.getNewTagName());
+            duplicateTag(userId,profileTagUpdateRequest,authentication);
+            profileTag.getTag().updateTagName(profileTagUpdateRequest.getNewTagName());
+        }
+        //색상코드
+        if(profileTagUpdateRequest.getNewColorCode() != null && !profileTagUpdateRequest.getNewColorCode().isBlank()) {
+            profileTag.updateColorCode(profileTagUpdateRequest.getNewColorCode());
+        }
+
+        return profileTag;
+    }
 
     //태그 삭제
     @Transactional
@@ -117,16 +122,17 @@ public class ProfileTagService {
         return userId;
     }
     //중복 테그인지 아닌지 확인
-    public void duplicateTag(Long userId, ProfileTagRequest profileTagRequest, Authentication authentication) {
+    public void duplicateTag(Long userId, HasTagName tagRequest, Authentication authentication) {
         userEqualsCurrentUser(getCurrentUserId(authentication), userId);
         User user = userRepository.findByIdAndIsDeletedFalse(userId).orElseThrow(() -> new NotFoundUserException(ErrorCode.NOT_FOUND_USER));
 
         boolean alreadyRegistered = profileTagReposiotry.findAllByUser(user).stream()
-                .anyMatch(pt -> pt.getTag().getTagName().equals(profileTagRequest.getTagName()));
+                .anyMatch(pt -> pt.getTag().getTagName().equals(tagRequest.getTagName()));
         if (alreadyRegistered) {
             throw new DuplicateTagException(ErrorCode.DUPLICATE_TAG_EXCEPTION);
         }
     }
+
 
 
 

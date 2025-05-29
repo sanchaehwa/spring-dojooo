@@ -11,7 +11,7 @@ import org.spring.dojooo.global.domain.Tag;
 public class ProfileTag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "proffile_tag_id")
+    @Column(name = "profile_tag_id")
     private Long id;
 
     @Column
