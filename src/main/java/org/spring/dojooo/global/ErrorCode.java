@@ -44,7 +44,11 @@ public enum ErrorCode {
     WRONG_USER_EDIT("본인의 프로필만 수정할 수 있습니다.",403),
 
     //메모
-    DUPLICAT_MEMO_HEADER("이미 사용중인 제목입니다. 다른 제목으로 작성해주세요",400);
+    DUPLICATE_MEMO_HEADER("이미 사용중인 제목입니다. 다른 제목으로 작성해주세요",400),
+
+    //테그 관련
+    DUPLICATE_TAG_EXCEPTION("이미 등록된 테그입니다",400),
+    NOTFOUND_TAG_EXCEPTION("테그를 찾을 수 없습니다",404);
 
 
 
