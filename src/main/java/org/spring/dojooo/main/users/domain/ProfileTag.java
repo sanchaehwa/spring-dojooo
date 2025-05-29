@@ -39,20 +39,11 @@ public class ProfileTag {
         this.isDeleted = isDeleted != null ? isDeleted : false;
         this.showOnProfile = showOnProfile != null ? showOnProfile : false;
     }
-    private void updateTagName(String newTagName) {
-        if(newTagName != null && !newTagName.isEmpty()) {
-            this.tag.updateTagName(newTagName);
-        }
-    }
-
 
     public void updateColorCode(String colorCode){
         if(colorCode != null && !colorCode.isBlank()){
             this.colorCode = colorCode;
         }
-    }
-    public void deleteTag(boolean isDeleted) {
-        this.isDeleted = isDeleted;
     }
     public void settingShowOnProfile(boolean showOnProfile){
         this.showOnProfile = showOnProfile;

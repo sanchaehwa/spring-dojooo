@@ -3,6 +3,7 @@ package org.spring.dojooo.main.users.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.spring.dojooo.global.domain.Tag;
 import org.spring.dojooo.global.response.ApiResponse;
 import org.spring.dojooo.main.users.domain.ProfileTag;
 import org.spring.dojooo.main.users.dto.ProfileTagRequest;
@@ -49,9 +50,14 @@ public class UserProfileTagController {
 
     }
 
-    @Operation(summary = "테그 삭제",description = "프로필에 등록하기위해 설정한 테그를 삭제합니다")
+    @Operation(summary = "태그 삭제", description = "프로필에 등록하기 위해 설정한 태그를 삭제합니다")
     @DeleteMapping("/delete/{userId}")
-    public ResponseEntity<ApiResponse> deleteTag(@PathVariable Long userId, @RequestBody ProfileTagRequest profileTagRequest,Authentication authentication) {
-        return ResponseEntity.ok(ApiResponse.of(200,"테그 삭제가 완료되었습니다",profileTagService.deleteTag(userId, profileTagRequest, authentication)));
+    public ResponseEntity<ApiResponse> deleteTag(
+            @PathVariable Long userId,
+            @RequestBody ProfileTagRequest profileTagRequest,
+            Authentication authentication
+    ) {
+        String deletedTagName = profileTagService.deleteTag(userId, profileTagRequest, authentication);
+        return ResponseEntity.ok(ApiResponse.of(200, "태그 삭제가 완료되었습니다", deletedTagName));
     }
 }
