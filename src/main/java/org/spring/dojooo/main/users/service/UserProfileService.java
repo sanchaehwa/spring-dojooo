@@ -5,16 +5,13 @@ import org.spring.dojooo.auth.jwt.dto.CustomUserDetails;
 import org.spring.dojooo.global.ErrorCode;
 import org.spring.dojooo.global.S3.S3FileService;
 import org.spring.dojooo.global.exception.NotFoundException;
-import org.spring.dojooo.global.domain.Tag;
+import org.spring.dojooo.main.users.exception.*;
 import org.spring.dojooo.main.users.domain.Profile;
 import org.spring.dojooo.main.users.domain.ProfileTag;
 import org.spring.dojooo.main.users.domain.User;
 import org.spring.dojooo.main.users.dto.ProfileDetails;
 import org.spring.dojooo.main.users.dto.ProfileUpdateRequest;
 import org.spring.dojooo.main.users.dto.ProfileSaveRequest;
-import org.spring.dojooo.main.users.exception.DuplicateTagException;
-import org.spring.dojooo.main.users.exception.NotFoundTagException;
-import org.spring.dojooo.main.users.exception.NotUserEqualsCurrentUserException;
 import org.spring.dojooo.main.users.repository.ProfileTagRepository;
 import org.spring.dojooo.main.users.repository.UserRepository;
 import org.springframework.security.core.Authentication;
@@ -69,8 +66,9 @@ public class UserProfileService {
         List<String> selectedTags = profileUpdateRequest.getTagNames();
 
         //5개보다 더 선택한 경우 예외처리
-        if(selectedTags != null && selectedTags.size()>5){
-            throw new IllegalArgumentException("최대 5개의 테그만 선택 가능합니다");}
+        if(selectedTags != null && selectedTags.size()>5) {
+            throw new MaxTegLengthException(ErrorCode.MAX_REGISTER_TAG_EXCEPTION);
+        }
         //현재 등록되어 있는 테그 불러옴
         List<ProfileTag> findAllTags = profileTagRepository.findAllByUser(user);
 

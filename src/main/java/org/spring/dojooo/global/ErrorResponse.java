@@ -26,6 +26,7 @@ public class ErrorResponse {
     public static ErrorResponse of(ErrorCode errorCode) {
         return new ErrorResponse(errorCode);
     }
+
     public static ErrorResponse of(ErrorCode errorCode, BindingResult bindingResult) {
         return new ErrorResponse(errorCode, FieldError.of(bindingResult));
     }

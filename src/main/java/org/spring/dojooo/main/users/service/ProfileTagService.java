@@ -8,10 +8,7 @@ import org.spring.dojooo.global.repository.TagRepository;
 import org.spring.dojooo.main.users.domain.ProfileTag;
 import org.spring.dojooo.main.users.domain.User;
 import org.spring.dojooo.main.users.dto.*;
-import org.spring.dojooo.main.users.exception.DuplicateTagException;
-import org.spring.dojooo.main.users.exception.NotFoundTagException;
-import org.spring.dojooo.main.users.exception.NotFoundUserException;
-import org.spring.dojooo.main.users.exception.NotUserEqualsCurrentUserException;
+import org.spring.dojooo.main.users.exception.*;
 import org.spring.dojooo.main.users.repository.ProfileTagRepository;
 import org.spring.dojooo.main.users.repository.UserRepository;
 import org.springframework.security.core.Authentication;
@@ -115,7 +112,7 @@ public class ProfileTagService {
     //테그 10자이상 작성시 Exception
     public void checkTagLength(String tagName) {
         if(tagName.length()>10){
-            throw new IllegalArgumentException("테그는 10자 이내로 작성가능합니다");
+            throw new MaxTegLengthException(ErrorCode.MAX_TAG_LENGTH_EXCEPTION);
         }
     }
     //테그 리스트중에서 조건에 맞는 테그 하나를 찾는 로직
