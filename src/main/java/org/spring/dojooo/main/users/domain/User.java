@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 @Entity
@@ -64,6 +65,8 @@ public class User {
         this.isDeleted = isDeleted != null ? isDeleted : false;
         this.profile = new Profile(DEFAULT_PROFILE_IMAGE,null); //profileimage = null, introduction = null
 
+
+
     }
     //수정 가능 항목
     enum UpdateInfo {
@@ -107,5 +110,11 @@ public class User {
         this.profile = profile;
     }
 
+    public List<String> getVisibleProfileTagNames() {
+        return this.profileTags.stream()
+                .filter(ProfileTag::isShowOnProfile)
+                .map(pt -> pt.getTag().getTagName())
+                .collect(Collectors.toList());
+    }
 
 }

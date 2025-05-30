@@ -2,6 +2,7 @@ package org.spring.dojooo.main.users.dto;
 
 import lombok.*;
 import org.spring.dojooo.main.users.domain.Profile;
+import org.spring.dojooo.main.users.domain.ProfileTag;
 import org.spring.dojooo.main.users.domain.User;
 
 import java.util.List;
@@ -28,12 +29,12 @@ public class ProfileDetails {
                 .map(Profile::getIntroduction)
                 .orElse("");
 
-
         return ProfileDetails.builder()
                 .id(user.getId())
                 .profileImage(profileImage)
                 .nickname(user.getNickname())
                 .introduction(introduction)
+                .tags(user.getVisibleProfileTagNames())
                 .isMine(isOwner)
                 .build();
     }
