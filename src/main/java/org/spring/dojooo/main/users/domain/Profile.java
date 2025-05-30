@@ -3,6 +3,8 @@ package org.spring.dojooo.main.users.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 
 @Embeddable
 @Getter
@@ -16,4 +18,5 @@ public class Profile {
 
     @Column(columnDefinition = "TEXT")
     private String introduction;
+
 }

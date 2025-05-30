@@ -130,17 +130,20 @@ public class ProfileTagService {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         return userDetails.getId();
     }
+
     //로그인한 사용자와 정보가 같은지 확인
     public void userEqualsCurrentUser(Long userId, Long currentUserId) {
         if(!userId.equals(currentUserId)) {
             throw new NotUserEqualsCurrentUserException(ErrorCode.NOT_USER_EQUALS_CURRENTUSER);
         }
     }
+
     //유저 조회 로직
     public User findCurrentUser(Long userId) {
         User user  = userRepository.findByIdAndIsDeletedFalse(userId).orElseThrow(() -> new NotFoundUserException(ErrorCode.NOT_FOUND_USER));
         return user;
     }
+
     //중복 테그인지 아닌지 확인
     public void duplicateTag(User user, HasTagName tagRequest) {
         boolean alreadyRegistered = profileTagRepository.findAllByUser(user).stream()
