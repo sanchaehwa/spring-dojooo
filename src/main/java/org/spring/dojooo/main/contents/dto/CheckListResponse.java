@@ -3,12 +3,11 @@ package org.spring.dojooo.main.contents.dto;
 import lombok.*;
 import org.spring.dojooo.main.contents.domain.CheckList;
 import org.spring.dojooo.main.contents.model.TodoState;
-
-import java.util.Date;
+import java.time.LocalDate;
 
 @Builder
 @Getter
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class CheckListResponse {
 
     private Long checklistId;
@@ -16,7 +15,7 @@ public class CheckListResponse {
     private TodoState todoState;
     private boolean isDeleted;
     private Long tagId;
-    private Date scheduledDate;
+    private LocalDate scheduledDate;
 
     public static CheckListResponse from(CheckList checkList, Long tagId) {
         return CheckListResponse.builder()
