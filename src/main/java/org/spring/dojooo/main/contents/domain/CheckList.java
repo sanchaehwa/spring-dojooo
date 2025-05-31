@@ -5,7 +5,6 @@ import org.spring.dojooo.main.contents.model.TodoState;
 import org.spring.dojooo.main.users.domain.User;
 
 import java.time.LocalDate;
-import java.util.*;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -29,7 +28,7 @@ public class CheckList {
     private LocalDate schedule;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private ChecklistTag checklistTag;
+    private CheckListTag checklistTag;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
@@ -38,7 +37,7 @@ public class CheckList {
     private boolean isDeleted;
 
     @Builder
-    public CheckList( String task, TodoState todoState, LocalDate schedule, ChecklistTag checklistTag, Boolean isDeleted,User user) {
+    public CheckList(String task, TodoState todoState, LocalDate schedule, CheckListTag checklistTag, Boolean isDeleted, User user) {
         this.task = task;
         this.todoState = todoState != null ? todoState : TodoState.TODO;
         this.schedule = schedule;

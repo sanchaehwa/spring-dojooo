@@ -3,14 +3,12 @@ package org.spring.dojooo.main.contents.dto;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.spring.dojooo.main.contents.domain.CheckList;
-import org.spring.dojooo.main.contents.domain.ChecklistTag;
 import org.spring.dojooo.main.contents.model.TodoState;
 import org.spring.dojooo.main.users.domain.User;
 
 import java.time.LocalDate;
-import java.util.Date;
 
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 
 @Getter
 public class CheckListRequest {
