@@ -4,11 +4,12 @@ import lombok.*;
 import org.spring.dojooo.main.contents.model.TodoState;
 import org.spring.dojooo.main.users.domain.User;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @Table(name="check_list")
 public class CheckList {
@@ -18,32 +19,32 @@ public class CheckList {
     @Column(name="checklist_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name ="user_id")
-    private User user;
-
-
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, unique = true, length = 50)
     private String task;
 
     @Enumerated(EnumType.STRING)
-    @Column
     private TodoState todoState;
 
     @Column
-    private Date schedule;
+    private LocalDate schedule;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private ChecklistTag checklistTag;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
 
     @Column
     private boolean isDeleted;
 
     @Builder
-    public CheckList(User user, String task, TodoState todoState, Date schedule, Boolean isDeleted) {
-        this.user = user;
+    public CheckList( String task, TodoState todoState, LocalDate schedule, ChecklistTag checklistTag, Boolean isDeleted,User user) {
         this.task = task;
         this.todoState = todoState != null ? todoState : TodoState.TODO;
+        this.schedule = schedule;
+        this.checklistTag = checklistTag;
         this.isDeleted = isDeleted != null ? isDeleted : false;
-        this.schedule = new Date();
-
+        this.user = user;
     }
 
 

@@ -7,10 +7,11 @@ import org.spring.dojooo.main.contents.domain.ChecklistTag;
 import org.spring.dojooo.main.contents.model.TodoState;
 import org.spring.dojooo.main.users.domain.User;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @NoArgsConstructor
-@AllArgsConstructor
+
 @Getter
 public class CheckListRequest {
     private Long userId;
@@ -20,7 +21,7 @@ public class CheckListRequest {
 
     private TodoState todoState;
 
-    private Date scheduleDate;
+    private LocalDate scheduleDate;
 
     private Long tagId; //사용자가 고른 테그
 

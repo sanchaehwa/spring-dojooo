@@ -12,4 +12,7 @@ import java.util.List;
 public interface CheckListRepository extends JpaRepository<CheckList, Long> {
     @Query("SELECT c FROM CheckList c WHERE c.user.id = :userId AND c.schedule = CURRENT_DATE AND c.isDeleted = false")
     List<CheckList> findTodayTasksByUser(@Param("userId") Long userId);
+
+
+
 }

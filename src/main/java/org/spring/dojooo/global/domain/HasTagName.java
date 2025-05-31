@@ -1,4 +1,4 @@
-package org.spring.dojooo.main.users.dto;
+package org.spring.dojooo.global.domain;
 
 public interface HasTagName {
     String getTagName();

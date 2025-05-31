@@ -3,6 +3,7 @@ package org.spring.dojooo.main.users.service;
 import lombok.RequiredArgsConstructor;
 import org.spring.dojooo.auth.jwt.dto.CustomUserDetails;
 import org.spring.dojooo.global.ErrorCode;
+import org.spring.dojooo.global.domain.HasTagName;
 import org.spring.dojooo.global.domain.Tag;
 import org.spring.dojooo.global.repository.TagRepository;
 import org.spring.dojooo.main.users.domain.ProfileTag;
