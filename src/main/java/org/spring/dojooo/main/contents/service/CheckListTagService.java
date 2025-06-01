@@ -4,12 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.spring.dojooo.auth.jwt.dto.CustomUserDetails;
 import org.spring.dojooo.global.ErrorCode;
 import org.spring.dojooo.main.contents.domain.CheckListTag;
-import org.spring.dojooo.main.contents.dto.CheckListDetailsList;
-import org.spring.dojooo.main.contents.dto.CheckListTagRequest;
-import org.spring.dojooo.main.contents.dto.CheckListUpdateTagRequest;
+import org.spring.dojooo.main.contents.dto.*;
 import org.spring.dojooo.main.contents.repository.ChecklistTagRepository;
 import org.spring.dojooo.main.users.domain.User;
-import org.spring.dojooo.global.domain.HasTagName;
 import org.spring.dojooo.main.users.exception.*;
 import org.spring.dojooo.main.users.repository.UserRepository;
 import org.springframework.security.core.Authentication;
@@ -87,6 +84,44 @@ public class CheckListTagService {
         return CheckListDetailsList.from(user,checklistTags);
     }
 
+    // 태그-체크리스트 카테고리 5개 등록
+    @Transactional
+    public CheckListDetailsList CheckListTagRegisterInCategory(
+            Long userId,
+            CheckListTagRegisterInCategoryRequest request,
+            Authentication authentication) {
+
+        User user = getCurrentUserId(userId, authentication);
+        List<String> tags = request.getTags();
+
+        if (tags.size() > 5) {
+            throw new MaxTagRegisterException(ErrorCode.MAX_REGISTER_TAG_EXCEPTION);
+        }
+
+        // 전체 태그를 비표시로 초기화
+        List<CheckListTag> checklistTags = checklistTagRepository.findAllByUser(user);
+        for (CheckListTag tag : checklistTags) {
+            tag.setChecklistShow(false);
+        }
+
+        // 선택된 태그만 표시로 설정
+        for (String tagName : tags) {
+            CheckListTag matchingTag = checklistTags.stream()
+                    .filter(t -> t.getTagName().equals(tagName))
+                    .findFirst()
+                    .orElseThrow(() -> new NotFoundTagException(ErrorCode.NOTFOUND_TAG_EXCEPTION));
+            matchingTag.setChecklistShow(true);
+        }
+
+        // 표시된 태그만 DTO로 변환
+        List<CheckListTagDetails> selectedTags = checklistTags.stream()
+                .filter(CheckListTag::isChecklistShow)
+                .map(tag -> CheckListTagDetails.from(user, tag))
+                .toList();
+
+        return CheckListDetailsList.from(user, checklistTags);
+    }
+
     //현재 로그인한 사용자 정보 == 로그인한 사용자와 정보가 같은지 확인하고 유저 조회
     public User getCurrentUserId(Long userId,Authentication authentication) {
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -101,11 +136,11 @@ public class CheckListTagService {
     //태그 10자 이상 작성시 Exception
     public void checkListTagLength(String tagName){
         if (tagName.length() > 10){
-            throw new MaxTegLengthException(ErrorCode.MAX_TAG_LENGTH_EXCEPTION);
+            throw new MaxTagLengthException(ErrorCode.MAX_TAG_LENGTH_EXCEPTION);
         }
     }
     //중복 테그인지 확인
-    public void duplicateTag(User user,HasTagName tagRequest ) {
+    public void duplicateTag(User user, org.spring.dojooo.global.domain.HasTagName tagRequest ) {
         boolean alreadyRegistered = checklistTagRepository.findAllByUser(user).stream()
                 .anyMatch(ct -> ct.getTagName().equals(tagRequest.getTagName()));
         if (alreadyRegistered) {
