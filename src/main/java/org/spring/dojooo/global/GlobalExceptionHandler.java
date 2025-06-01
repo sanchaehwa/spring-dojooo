@@ -83,10 +83,16 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.NOT_USER_EQUALS_CURRENTUSER);
         return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
     }
-    @ExceptionHandler(MaxTegLengthException.class)
-    public ResponseEntity<ErrorResponse> handleMaxTegLengthException(MaxTegLengthException exception) {
+    @ExceptionHandler(MaxTagLengthException.class)
+    public ResponseEntity<ErrorResponse> handleMaxTegLengthException(MaxTagLengthException exception) {
         log.error("handleMaxTegLengthExceptin", exception);
         ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.MAX_TAG_LENGTH_EXCEPTION);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(MaxTagRegisterException.class)
+    public ResponseEntity<ErrorResponse> handleMaxTagRegisterException(MaxTagRegisterException exception) {
+        log.error("handleMaxTagRegisterException", exception);
+        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.MAX_REGISTER_TAG_EXCEPTION);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 

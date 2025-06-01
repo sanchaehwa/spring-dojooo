@@ -2,7 +2,6 @@ package org.spring.dojooo.main.users.dto;
 
 import lombok.*;
 import org.spring.dojooo.main.users.domain.Profile;
-import org.spring.dojooo.main.users.domain.ProfileTag;
 import org.spring.dojooo.main.users.domain.User;
 
 import java.util.List;

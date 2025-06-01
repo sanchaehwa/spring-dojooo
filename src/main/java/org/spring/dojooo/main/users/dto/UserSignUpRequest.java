@@ -1,8 +1,6 @@
 package org.spring.dojooo.main.users.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import org.spring.dojooo.main.users.domain.User;
 

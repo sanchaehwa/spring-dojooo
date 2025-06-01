@@ -49,4 +49,7 @@ public class CheckListTag {
         }
     }
 
+    public void setChecklistShow(boolean isChecklistShow) {
+        this.isChecklistShow = isChecklistShow;
+    }
 }
