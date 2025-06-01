@@ -2,7 +2,6 @@ package org.spring.dojooo.main.users.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.spring.dojooo.global.domain.Tag;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -17,9 +16,8 @@ public class ProfileTag {
     @Column
     private String colorCode;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="tag_id")
-    private Tag tag;
+    @Column
+    private String tagName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id")
@@ -32,9 +30,9 @@ public class ProfileTag {
     private boolean showOnProfile;
 
     @Builder
-    public ProfileTag(String colorCode, Tag tag, User user, Boolean isDeleted, Boolean showOnProfile) {
+    public ProfileTag(String colorCode, String tagName, User user, Boolean isDeleted, Boolean showOnProfile) {
         this.colorCode = colorCode;
-        this.tag = tag;
+        this.tagName = tagName;
         this.user = user;
         this.isDeleted = isDeleted != null ? isDeleted : false;
         this.showOnProfile = showOnProfile != null ? showOnProfile : false;
@@ -45,11 +43,18 @@ public class ProfileTag {
             this.colorCode = colorCode;
         }
     }
+    public void updateTagName(String tagName){
+        if(tagName != null && !tagName.isBlank()){
+            this.tagName = tagName;
+        }
+    }
     public void settingShowOnProfile(boolean showOnProfile){
         this.showOnProfile = showOnProfile;
     }
 
-
+    public void setUserInternal(User user) {
+        this.user = user;
+    }
 
 
 

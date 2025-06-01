@@ -3,8 +3,6 @@ package org.spring.dojooo.main.users.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
-
 
 @Embeddable
 @Getter

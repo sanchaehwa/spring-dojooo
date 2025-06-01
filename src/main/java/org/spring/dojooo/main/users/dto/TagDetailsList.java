@@ -8,8 +8,8 @@ import java.util.List;
 //사용자에 등록되어있는 전체 테그를 조회하는 DTO
 @Getter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class TagDetailsList {
     private Long userId;
     private List<TagDetails> tags;

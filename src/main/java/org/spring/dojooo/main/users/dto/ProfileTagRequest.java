@@ -3,8 +3,8 @@ package org.spring.dojooo.main.users.dto;
 import lombok.*;
 import org.spring.dojooo.global.domain.HasTagName;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class ProfileTagRequest implements HasTagName {
 

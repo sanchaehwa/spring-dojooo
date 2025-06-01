@@ -113,8 +113,14 @@ public class User {
     public List<String> getVisibleProfileTagNames() {
         return this.profileTags.stream()
                 .filter(ProfileTag::isShowOnProfile)
-                .map(pt -> pt.getTag().getTagName())
+                .map(pt -> pt.getTagName())
                 .collect(Collectors.toList());
+    }
+    //편의매서드
+    public void addProfileTag(ProfileTag tag) {
+        this.profileTags.add(tag);
+        // 양방향 연관관계 설정
+        tag.setUserInternal(this); // private 메서드에서만 user 세팅
     }
 
 }

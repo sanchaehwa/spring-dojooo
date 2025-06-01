@@ -3,7 +3,6 @@ package org.spring.dojooo.main.users.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.spring.dojooo.global.domain.Tag;
 import org.spring.dojooo.global.response.ApiResponse;
 import org.spring.dojooo.main.users.domain.ProfileTag;
 import org.spring.dojooo.main.users.dto.ProfileTagRequest;
