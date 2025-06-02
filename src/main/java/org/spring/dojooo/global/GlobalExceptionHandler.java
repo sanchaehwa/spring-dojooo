@@ -6,6 +6,8 @@ import org.spring.dojooo.global.exception.ApiException;
 import org.spring.dojooo.global.exception.DuplicateException;
 import org.spring.dojooo.global.exception.NotFoundException;
 import org.spring.dojooo.global.exception.S3Exception;
+import org.spring.dojooo.main.contents.exception.NotFoundTaskException;
+import org.spring.dojooo.main.contents.exception.WrongEditChecklistException;
 import org.spring.dojooo.main.users.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -94,6 +96,18 @@ public class GlobalExceptionHandler {
         log.error("handleMaxTagRegisterException", exception);
         ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.MAX_REGISTER_TAG_EXCEPTION);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(NotFoundTaskException.class)
+    public ResponseEntity<ErrorResponse> handleNotFoundTaskException(NotFoundTaskException exception) {
+        log.error("handleNotFoundTaskException", exception);
+        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.NOT_FOUND_TASK_EXCEPTION);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(WrongEditChecklistException.class)
+    public ResponseEntity<ErrorResponse> handleWrongEditChecklistException(WrongEditChecklistException exception){
+        log.error("handleWrongEditChecklistException", exception);
+        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.WRONG_EDIT_CHECKLIST_EXCEPTION);
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
     }
 
 }

@@ -3,34 +3,35 @@ package org.spring.dojooo.main.contents.dto;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.spring.dojooo.main.contents.domain.CheckList;
+import org.spring.dojooo.main.contents.domain.CheckListTag;
 import org.spring.dojooo.main.contents.model.TodoState;
 import org.spring.dojooo.main.users.domain.User;
 
 import java.time.LocalDate;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 
 @Getter
-public class CheckListRequest {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+
+public class CheckListAddRequest {
+    private Long checkListId;
     private Long userId;
 
     @NotBlank(message = "할일을 입력해주세요")
     private String task;
-
-    private TodoState todoState;
-
-    private LocalDate scheduleDate;
-
+    private LocalDate startDate;
+    private LocalDate endDate;
     private Long tagId; //사용자가 고른 테그
 
-    CheckList toEntity(User user) {
+    public CheckList toEntity(User user, CheckListTag tag) {
         return CheckList.builder()
-                .user(user)
                 .task(task)
-                .todoState(todoState)
-                .isDeleted(false)
-                .schedule(scheduleDate)
+                .startDate(startDate)
+                .endDate(endDate)
+                .user(user)
+                .checklistTag(tag)
                 .build();
-
     }
+
+
 }

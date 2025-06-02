@@ -8,6 +8,7 @@ import org.spring.dojooo.auth.jwt.dto.CustomUserDetails;
 import org.spring.dojooo.global.response.ApiResponse;
 
 import org.spring.dojooo.main.users.domain.User;
+import org.spring.dojooo.main.users.dto.UserResponse;
 import org.spring.dojooo.main.users.dto.UserSignUpRequest;
 import org.spring.dojooo.main.users.dto.UserUpdateRequest;
 import org.spring.dojooo.main.users.service.UserService;
@@ -37,9 +38,9 @@ public class UserController {
 
     @Operation(summary = "회원 조회", description = "사용자의 ID를 전달받아 회원 조회를 합니다")
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<User>> findUserById(@PathVariable Long id) { //@PathWariable 동적으로 URL에 정보를 담을 수 있음.
+    public ResponseEntity<ApiResponse<UserResponse>> findUserById(@PathVariable Long id) { //@PathWariable 동적으로 URL에 정보를 담을 수 있음.
         User user = userService.findUserById(id);
-        return ResponseEntity.ok(ApiResponse.ok(user));
+        return ResponseEntity.ok(ApiResponse.ok(UserResponse.from(user)));
     }
 
     //회원 정보 수정

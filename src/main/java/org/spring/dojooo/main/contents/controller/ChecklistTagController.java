@@ -49,6 +49,5 @@ public class ChecklistTagController {
     public ResponseEntity<ApiResponse> deleteCheckListTag(@PathVariable Long userId,@Valid @RequestBody CheckListTagRequest checkListTagRequest, Authentication authentication) {
         String deletedCheckListTag = checkListTagService.deleteCheckListTag(userId, checkListTagRequest, authentication);
         return ResponseEntity.ok(ApiResponse.of(200,"카테고리 삭제가 완료되었습니다",deletedCheckListTag));
-
     }
 }

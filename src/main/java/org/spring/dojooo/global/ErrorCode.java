@@ -50,8 +50,11 @@ public enum ErrorCode {
     //테그 관련
     DUPLICATE_TAG_EXCEPTION("이미 등록된 테그입니다",400),
     NOTFOUND_TAG_EXCEPTION("테그를 찾을 수 없습니다",404),
-    MAX_TAG_LENGTH_EXCEPTION("테그는 10자 이내로 작성할 수 있습니다",400);
+    MAX_TAG_LENGTH_EXCEPTION("테그는 10자 이내로 작성할 수 있습니다",400),
 
+    //체크리스트 관련
+    NOT_FOUND_TASK_EXCEPTION("등록된 할일이 없습니다",404),
+    WRONG_EDIT_CHECKLIST_EXCEPTION("본인 체크리스트만 수정 후 저장할 수 있습니다",403);
 
 
     private final String message;

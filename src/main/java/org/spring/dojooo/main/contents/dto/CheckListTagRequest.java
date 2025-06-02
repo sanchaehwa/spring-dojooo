@@ -3,8 +3,8 @@ package org.spring.dojooo.main.contents.dto;
 import lombok.*;
 import org.spring.dojooo.global.domain.HasTagName;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Builder
 public class CheckListTagRequest implements HasTagName {
@@ -12,7 +12,7 @@ public class CheckListTagRequest implements HasTagName {
 
     private String colorCode;
 
-    private String isChecklistShow;
+    private String isChecklistTagShow;
 
     @Override
     public String getTagName() {

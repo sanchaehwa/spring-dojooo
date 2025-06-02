@@ -18,24 +18,24 @@ public class CheckListTag {
     @Column(nullable = false, unique = true, length = 50)
     private String tagName;
 
-    @Column
+    @Column(name = "color_code")
     private String colorCode;
 
     @Column
     private boolean isDeleted;
 
     @Column
-    private boolean isChecklistShow;
+    private boolean isChecklistTagShow;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
     @Builder
-    public CheckListTag(String tagName, String colorCode, Boolean isDeleted, Boolean isChecklistShow, User user) {
+    public CheckListTag(String tagName, String colorCode, Boolean isDeleted, Boolean isChecklistTagShow, User user) {
         this.tagName = tagName;
         this.colorCode = colorCode;
         this.isDeleted = isDeleted != null ? isDeleted : false;
-        this.isChecklistShow = isChecklistShow != null ? isChecklistShow : false;
+        this.isChecklistTagShow = isChecklistTagShow != null ? isChecklistTagShow : false;
         this.user = user;
     }
     public void updateCheckListTagName(String tagName) {
@@ -44,12 +44,12 @@ public class CheckListTag {
         }
     }
     public void updateColorCode(String colorCode) {
-        if(colorCode != null && !colorCode.isEmpty()) {
+        if (colorCode != null && !colorCode.isEmpty() && !colorCode.equals(this.colorCode)) {
             this.colorCode = colorCode;
         }
     }
 
-    public void setChecklistShow(boolean isChecklistShow) {
-        this.isChecklistShow = isChecklistShow;
+    public void setChecklistShow(boolean isChecklistTagShow) {
+        this.isChecklistTagShow = isChecklistTagShow;
     }
 }

@@ -10,5 +10,5 @@ import java.util.List;
 @Builder
 public class CheckListTagRegisterInCategoryRequest {
     private List<String> tags;
-    private boolean isChecklistShow;
+    private boolean isChecklistTagShow;
 }
