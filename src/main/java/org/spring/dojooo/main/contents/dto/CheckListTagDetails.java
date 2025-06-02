@@ -16,7 +16,7 @@ public class CheckListTagDetails {
 
     public static CheckListTagDetails from(User user, CheckListTag checkListTag) {
         return CheckListTagDetails.builder()
-                .id(user.getId())
+                .id(checkListTag.getId())
                 .tagName(checkListTag.getTagName())
                 .colorCode(checkListTag.getColorCode())
                 .isDeleted(checkListTag.isDeleted())
