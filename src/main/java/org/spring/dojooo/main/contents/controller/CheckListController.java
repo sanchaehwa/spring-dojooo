@@ -24,9 +24,7 @@ public class CheckListController {
 
     @Operation(summary = "체크리스트 페이지 조회", description = "달력 및 특정 날짜의 체크리스트를 조회합니다")
     @GetMapping("/{userId}")
-    public ResponseEntity<ApiResponse<CheckListPageResponse>> getCheckList(
-            @PathVariable Long userId,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+    public ResponseEntity<ApiResponse<CheckListPageResponse>> getCheckList(@PathVariable Long userId, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             Authentication authentication) {
 
         LocalDate targetDate = (date != null) ? date : LocalDate.now();
@@ -46,9 +44,7 @@ public class CheckListController {
 
     @Operation(summary = "특정 날짜의 할일 조회", description = "특정 날짜의 할일을 조회합니다.")
     @GetMapping("/{userId}/date")
-    public ResponseEntity<ApiResponse<CheckListResponse>> getTasksByDate(
-            @PathVariable Long userId,
-            @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+    public ResponseEntity<ApiResponse<CheckListResponse>> getTasksByDate(@PathVariable Long userId, @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             Authentication authentication) {
 
         CheckListResponse result = checklistService.getChecklistByDate(userId, date, authentication);
@@ -57,10 +53,7 @@ public class CheckListController {
 
     @Operation(summary = "월별 할일 조회", description = "선택한 월의 할일을 조회합니다")
     @GetMapping("/{userId}/month")
-    public ResponseEntity<ApiResponse<List<CheckListResponse>>> getTasksByMonth(
-            @PathVariable Long userId,
-            @RequestParam("year") int year,
-            @RequestParam("month") int month,
+    public ResponseEntity<ApiResponse<List<CheckListResponse>>> getTasksByMonth(@PathVariable Long userId, @RequestParam("year") int year, @RequestParam("month") int month,
             Authentication authentication) {
 
         List<CheckListResponse> result = checklistService.getCheckListByMonth(userId, year, month, authentication);
@@ -81,12 +74,8 @@ public class CheckListController {
 
     @Operation(summary = "할일 수정", description = "등록한 할일을 수정합니다")
     @PatchMapping("/{userId}/edit")
-    public ResponseEntity<ApiResponse<CheckListResponse>> editCheckList(
-            @PathVariable Long userId,
-            @RequestBody CheckListUpdateRequest checkListUpdateRequest,
-            Authentication authentication) {
+    public ResponseEntity<ApiResponse<CheckListResponse>> editCheckList(@PathVariable Long userId, @RequestBody CheckListUpdateRequest checkListUpdateRequest, Authentication authentication) {
 
-        // 서비스가 이미 CheckListResponse 반환하므로 그대로 받음
         CheckListResponse response = checklistService.editTask(userId, checkListUpdateRequest, authentication);
         return ResponseEntity.ok(ApiResponse.of(200, "할일 수정이 완료되었습니다", response));
     }

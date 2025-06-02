@@ -12,7 +12,7 @@ public class CheckListTagDetails {
     private String tagName;
     private String colorCode;
     private boolean isDeleted;
-    private boolean isChecklistShow;
+    private boolean isChecklistTagShow;
 
     public static CheckListTagDetails from(User user, CheckListTag checkListTag) {
         return CheckListTagDetails.builder()
@@ -20,7 +20,7 @@ public class CheckListTagDetails {
                 .tagName(checkListTag.getTagName())
                 .colorCode(checkListTag.getColorCode())
                 .isDeleted(checkListTag.isDeleted())
-                .isChecklistShow(checkListTag.isChecklistShow())
+                .isChecklistTagShow(checkListTag.isChecklistTagShow())
                 .build();
     }
 }

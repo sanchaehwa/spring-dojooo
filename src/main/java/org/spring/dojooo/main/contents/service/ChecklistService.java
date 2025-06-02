@@ -93,7 +93,7 @@ public class ChecklistService {
             CheckListTag newTag = checklistTagRepository.findById(checkListUpdateRequest.getTagId())
                     .orElseThrow(() -> new NotFoundTagException(ErrorCode.NOTFOUND_TAG_EXCEPTION));
 
-            existingTask.updateTag(newTag); // 이 메서드가 없다면 setter 또는 직접 필드 변경
+            existingTask.updateTag(newTag);
         }
 
         // 기타 정보 업데이트

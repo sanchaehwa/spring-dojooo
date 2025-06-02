@@ -70,5 +70,4 @@ public class CheckList {
         this.checklistTag = tag;
     }
 
-
 }

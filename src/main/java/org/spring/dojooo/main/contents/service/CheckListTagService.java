@@ -24,20 +24,18 @@ public class CheckListTagService {
     //태그 새로 저장
     @Transactional
     public CheckListTag saveCheckListTag(Long userId, CheckListTagRequest checkListTagRequest, Authentication authentication) {
-        User user = getCurrentUserId(userId,authentication);
+        User user = getCurrentUserId(userId, authentication);
         checkListTagLength(checkListTagRequest.getTagName());
-        duplicateTag(user,checkListTagRequest);
-        CheckListTag checklistTag=  checklistTagRepository.findByUserAndTagNameAndIsDeletedFalse(user, checkListTagRequest.getTagName())
-                .orElseGet(() -> checklistTagRepository.save(
-                        CheckListTag.builder()
-                                .tagName(checkListTagRequest.getTagName())
-                                .colorCode(checkListTagRequest.getColorCode())
-                                .isChecklistShow(false)
-                                .user(user)
-                                .build()
-                ));
+        duplicateTag(user, checkListTagRequest);
 
-        return checklistTagRepository.save(checklistTag);
+        CheckListTag newTag = CheckListTag.builder()
+                .tagName(checkListTagRequest.getTagName())
+                .colorCode(checkListTagRequest.getColorCode())
+                .isChecklistTagShow(false)
+                .user(user)
+                .build();
+
+        return checklistTagRepository.save(newTag);
     }
 
     //태그 수정
@@ -58,8 +56,6 @@ public class CheckListTagService {
 
         if (checkListUpdateTagRequest.getNewCheckListColorCode() != null &&
                 !checkListUpdateTagRequest.getNewCheckListColorCode().isBlank()) {
-
-            checkListTagLength(checkListUpdateTagRequest.getNewCheckListColorCode());
             checklistTag.updateColorCode(checkListUpdateTagRequest.getNewCheckListColorCode());
         }
 
@@ -115,7 +111,7 @@ public class CheckListTagService {
 
         // 표시된 태그만 DTO로 변환
         List<CheckListTagDetails> selectedTags = checklistTags.stream()
-                .filter(CheckListTag::isChecklistShow)
+                .filter(CheckListTag::isChecklistTagShow)
                 .map(tag -> CheckListTagDetails.from(user, tag))
                 .toList();
 

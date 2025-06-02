@@ -12,7 +12,7 @@ public class CheckListTagRequest implements HasTagName {
 
     private String colorCode;
 
-    private String isChecklistShow;
+    private String isChecklistTagShow;
 
     @Override
     public String getTagName() {
