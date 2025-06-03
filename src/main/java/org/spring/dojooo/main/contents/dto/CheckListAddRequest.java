@@ -4,7 +4,6 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.spring.dojooo.main.contents.domain.CheckList;
 import org.spring.dojooo.main.contents.domain.CheckListTag;
-import org.spring.dojooo.main.contents.model.TodoState;
 import org.spring.dojooo.main.users.domain.User;
 
 import java.time.LocalDate;

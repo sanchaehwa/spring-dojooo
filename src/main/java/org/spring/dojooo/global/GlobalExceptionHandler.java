@@ -6,7 +6,9 @@ import org.spring.dojooo.global.exception.ApiException;
 import org.spring.dojooo.global.exception.DuplicateException;
 import org.spring.dojooo.global.exception.NotFoundException;
 import org.spring.dojooo.global.exception.S3Exception;
+import org.spring.dojooo.main.contents.exception.DuplicateTechLogTitleException;
 import org.spring.dojooo.main.contents.exception.NotFoundTaskException;
+import org.spring.dojooo.main.contents.exception.NotFoundTechLogException;
 import org.spring.dojooo.main.contents.exception.WrongEditChecklistException;
 import org.spring.dojooo.main.users.exception.*;
 import org.springframework.http.HttpStatus;
@@ -42,10 +44,10 @@ public class GlobalExceptionHandler {
                 ErrorCode.INVALID_INPUT, exception.getBindingResult());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
-    @ExceptionHandler({NotFoundUserException.class, NotFoundTagException.class})
+    @ExceptionHandler({NotFoundUserException.class, NotFoundTagException.class,NotFoundTaskException.class, NotFoundTechLogException.class})
     public ResponseEntity<ErrorResponse> handleNotFound(NotFoundException exception) {
         log.error("handleNotFoundException", exception);
-        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.NOT_FOUND_RESOURCE);
+        ErrorResponse errorResponse = ErrorResponse.of(exception.getErrorCode());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
     @ExceptionHandler(IllegalArgumentException.class)
@@ -55,11 +57,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({DuplicateUserException.class, DuplicateTagException.class})
+    @ExceptionHandler({DuplicateUserException.class, DuplicateTagException.class, DuplicateTechLogTitleException.class})
     public ResponseEntity<ErrorResponse> handleDuplicateException(DuplicateException exception) {
         log.error("handleDuplicateUserException", exception);
         ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.CONFLICT_ERROR);
-        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
     @ExceptionHandler(InvalidTokenException.class)
     public ResponseEntity<ErrorResponse> handleInvalidToken(InvalidTokenException exception) {
@@ -95,12 +97,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleMaxTagRegisterException(MaxTagRegisterException exception) {
         log.error("handleMaxTagRegisterException", exception);
         ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.MAX_REGISTER_TAG_EXCEPTION);
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-    }
-    @ExceptionHandler(NotFoundTaskException.class)
-    public ResponseEntity<ErrorResponse> handleNotFoundTaskException(NotFoundTaskException exception) {
-        log.error("handleNotFoundTaskException", exception);
-        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.NOT_FOUND_TASK_EXCEPTION);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
     @ExceptionHandler(WrongEditChecklistException.class)
