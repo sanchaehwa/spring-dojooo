@@ -56,7 +56,8 @@ public enum ErrorCode {
     //글쓰기 관련
     DUPLICATE_TITLE_EXCEPTION("해당 제목으로 작성할 글이 존재합니다",400),
     NOTFOUND_TECHLOG_EXCEPTION("작성한 글이 존재하지않습니다.",404),
-    MAX_TITLE_LENGTH_EXCEPTION("제목은 20자 이내로 작성 할 수 있습니다",400);
+    MAX_TITLE_LENGTH_EXCEPTION("제목은 20자 이내로 작성 할 수 있습니다",400),
+    SECRET_TECHLOG_EXCEPTION("비공개 글입니다",403);
 
     private final String message;
     private final int status;

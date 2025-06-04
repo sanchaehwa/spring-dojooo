@@ -8,10 +8,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-public class TechLogEditRequest {
-    private Long techLogId;
+public class TechLogTempResponse {
+    //임시저장 요청 DTO
+    private String techLogId; //새글이면 Null
     private String title;
     private String content;
-    private boolean isPublic;
-    private LocalDateTime createdAt;
+    private String imageUrl;
+    private LocalDateTime savedAt;
+
 }

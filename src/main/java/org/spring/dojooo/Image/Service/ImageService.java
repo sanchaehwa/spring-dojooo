@@ -26,33 +26,41 @@ public class ImageService {
     private final UserRepository userRepository;
 
     @Transactional
-    public String uploadProfileImage(MultipartFile file, String email) throws IOException {
+    public String uploadImage(MultipartFile file, String email, String type) {
         if (file == null || file.isEmpty()) {
             log.warn("업로드할 파일이 비어 있습니다. email={}", email);
             throw new IllegalArgumentException("업로드할 파일이 없습니다.");
         }
 
-        // 유저 조회
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundUserException(ErrorCode.NOT_FOUND_USER));
 
-        // 기존 이미지 삭제
-        imageRepository.findByUserId(user.getId()).ifPresent(oldImage -> {
-            log.info("기존 이미지 삭제: {}", oldImage.getUrl());
-            s3Uploader.deleteImageFromS3(oldImage.getUrl());
-            imageRepository.delete(oldImage);
-        });
-
-        // S3에 이미지 업로드
         String uploadedUrl;
         try {
-            uploadedUrl = s3Uploader.upload(file, "profile");
+            uploadedUrl = s3Uploader.upload(file, type); // type: "profile", "techlog", etc.
             log.info("이미지 S3 업로드 완료: {}", uploadedUrl);
         } catch (Exception e) {
             log.error("S3 업로드 실패. email={}, filename={}", email, file.getOriginalFilename(), e);
             throw new RuntimeException("S3 업로드 실패", e);
         }
 
-        return uploadedUrl; //S3 이미지 업로드만 하고 url 반환
+        // 프로필 전용 처리
+        if (type.equals("profile")) {
+            imageRepository.findByUserId(user.getId()).ifPresent(oldImage -> {
+                log.info("기존 프로필 이미지 삭제: {}", oldImage.getUrl());
+                s3Uploader.deleteImageFromS3(oldImage.getUrl());
+                imageRepository.delete(oldImage);
+            });
+
+            // 새 이미지 저장
+            Image image = Image.builder()
+                    .user(user)
+                    .url(uploadedUrl)
+                    .build();
+            imageRepository.save(image);
+        }
+
+        // 프로필 외에는 S3에만 저장하고 URL만 반환
+        return uploadedUrl;
     }
-}
+    }

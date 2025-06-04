@@ -16,9 +16,9 @@ import java.time.LocalDateTime;
 
 public class TechLog {
     @Id
-    @Column(name="techlog_id")
+    @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long techLogid;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id")
@@ -27,11 +27,11 @@ public class TechLog {
     @Column(nullable = false, unique = true,length = 45)
     private String title;
 
-    @Column
-    private String content;
+    @Column(columnDefinition = "TEXT")
+    private String content; //이미지 포함한 마크다운 형식으로 글 작성
 
     @Column(name = "image_url")
-    private String imageUrl;
+    private String imageUrl; //썸네일용
 
     @Column(nullable = false,columnDefinition = "TINYINT default 0")
     private boolean isDeleted; //삭제 여부
@@ -40,7 +40,7 @@ public class TechLog {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(nullable = false, columnDefinition = "TINYINT default 0")
-    private boolean isRead;  //boolean 자체가 null 안되니깐 nullable = false는 사실상 의미 없음 Boolean 으로 쓴다면 Null 허용이라 설정해줘야하고
+    private boolean isPublic;  //boolean 자체가 null 안되니깐 nullable = false는 사실상 의미 없음 Boolean 으로 쓴다면 Null 허용이라 설정해줘야하고
 
     @PrePersist //memberRepository.save -DB에 저장되기 직전에 실행이 되서 자동 설정 - JPA 생명주기 이벤트 콜백
     public void time(){
@@ -49,20 +49,27 @@ public class TechLog {
 
 
     @Builder
-    public TechLog(User user,  String  title, String content, String imageUrl, Boolean isDeleted, Boolean isRead,LocalDateTime createdAt) {
+    public TechLog(User user, String title, String content, String imageUrl, Boolean isDeleted, Boolean isPublic, LocalDateTime createdAt) {
         this.user = user;
         this.title = title;
         this.content = content;
         this.imageUrl = imageUrl;
-        this.isDeleted = isDeleted != null ? isDeleted : false; //Boolean 이기에 Null 타입 들어오면 NPD(NullPointerException 발생하니깐 예방)
-        this.isRead = isRead != null ? isRead : false;
+        this.isDeleted = isDeleted != null ? isDeleted : false;
+        this.isPublic = isPublic != null ? isPublic : false;
         this.createdAt = createdAt;
     }
+
     public void updateTechLogTitle(String title){
         this.title = title;
     }
     public void updateTechLogContent(String content){
         this.content = content;
+    }
+    public void changeIsPublic(boolean isPublic){
+        this.isPublic = isPublic;
+    }
+    public void changeIsDeleted(boolean isDeleted){
+        this.isDeleted = isDeleted;
     }
 
 

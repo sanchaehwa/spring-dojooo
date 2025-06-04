@@ -8,6 +8,6 @@ import java.util.Optional;
 
 @Repository
 public interface TechLogRepository extends JpaRepository<TechLog, Long> {
-    Optional<TechLog> findByTechLogId(Long techLogId);
-    Optional<TechLog> findByTechLogTitle(String title);
+    Optional<TechLog> findByTechLogid(Long techLogid);
+    Optional<TechLog> findBytitle(String title);
 }

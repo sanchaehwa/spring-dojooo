@@ -11,15 +11,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 
 public class TechLogAddRequest {
-    private Long userId;
-
+    private Long techLogId;
     @NotBlank(message = "제목을 입력해주세요")
     private String title;
     private String content;
     private String imageUrl;
     private LocalDateTime createDate;
     @NotNull(message = "공개여부를 설정해주세요")
-    private boolean isRead;
+    private boolean isPublic;
 
     public TechLog toEntity(User user) {
         return TechLog.builder()
@@ -28,7 +27,7 @@ public class TechLogAddRequest {
                 .content(content)
                 .imageUrl(imageUrl)
                 .createdAt(LocalDateTime.now())
-                .isRead(isRead)
+                .isPublic(isPublic)
                 .build();
 
     }
