@@ -12,9 +12,9 @@ import org.spring.dojooo.main.users.domain.User;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="image")
+@Table(name="profile_image")
 
-public class Image {
+public class ProfileImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="image_id")
@@ -27,8 +27,8 @@ public class Image {
     private String url;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", unique = true) //한 유저당 하나의 사진만
     private User user;
 
-    }
+}
 

@@ -109,6 +109,8 @@ public class TechLogService {
                 throw new NotUserEqualsCurrentUserException(ErrorCode.SECRET_TECHLOG_EXCEPTION);
             }
         }
+        //LAZY 초기화
+        techLog.getUser().getNickname();
         return techLog;
     }
 
