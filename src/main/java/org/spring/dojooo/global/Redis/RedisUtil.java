@@ -6,19 +6,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.spring.dojooo.main.contents.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Component
 @Slf4j
 @RequiredArgsConstructor
 public class RedisUtil {
     private final RedisTemplate<String, String> redisTemplate;
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
     @PostConstruct
     public void init() {
@@ -65,6 +67,62 @@ public class RedisUtil {
         Boolean deleted = redisTemplate.delete("refresh:" + email);
         log.info("Redis 삭제 - user: {}. refreshToken: {}", email,deleted);
     }
+    // ======================== 임시 저장 관련 =========================
+    public void saveTempLog(Long userId, String tempId, TechLogTempRedisDTO techLogTempRedisDTO) {
+        String redisKey = buildTempLogKey(userId, tempId);
+        try {
+            techLogTempRedisDTO.updateSavedAt(LocalDateTime.now()); // 저장 시점 자동 설정
+            String value = objectMapper.writeValueAsString(techLogTempRedisDTO);
+            redisTemplate.opsForValue().set(redisKey, value, Duration.ofHours(24));
+            log.info("임시 글 저장 - key: {}", redisKey);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("임시 저장 실패", e);
+        }
+    }
 
+    // 자동 저장(업데이트 + TTL 연장 포함)
+    public void updateTempLog(Long userId, String tempId, TechLogTempRedisDTO techLogTempRedisDTO) {
+        String redisKey = buildTempLogKey(userId, tempId);
+        try {
+           techLogTempRedisDTO.updateSavedAt(LocalDateTime.now()); // 수정 시점 자동 갱신
+            String value = objectMapper.writeValueAsString(techLogTempRedisDTO);
+            redisTemplate.opsForValue().set(redisKey, value, Duration.ofHours(24));
+            log.info("임시 글 자동 저장 - key: {}", redisKey);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("임시 저장 갱신 실패", e);
+        }
+    }
 
+    public TechLogTempResponse loadTempLog(Long userId, String tempId) {
+        String redisKey = buildTempLogKey(userId, tempId);
+        String value = redisTemplate.opsForValue().get(redisKey);
+        if (value == null) return null;
+
+        try {
+            TechLogTempRedisDTO request = objectMapper.readValue(value, TechLogTempRedisDTO.class);
+            return TechLogTempResponse.builder()
+                    .techLogId(request.getTechLogId())
+                    .title(request.getTitle())
+                    .content(request.getContent())
+                    .imageUrl(request.getImageUrl())
+                    .savedAt(request.getSavedAt())
+                    .build();
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("임시 저장 불러오기 실패", e);
+        }
+    }
+
+    public void deleteTempLog(Long userId, String tempId) {
+        String redisKey = buildTempLogKey(userId, tempId);
+        Boolean deleted = redisTemplate.delete(redisKey);
+        log.info("임시 글 삭제 - key: {}, 삭제 결과: {}", redisKey, deleted);
+    }
+    private static final String TEMP_LOG_KEY_PREFIX = "tempLog";
+
+    private String buildTempLogKey(Long userId, String tempId) {
+        return String.format("%s:%d:%s", TEMP_LOG_KEY_PREFIX, userId, tempId);
+    }
 }
+
+
+

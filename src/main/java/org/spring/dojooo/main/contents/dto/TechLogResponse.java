@@ -14,20 +14,22 @@ public class TechLogResponse {
 
    private String nickname;
    private Long userId;
+   private Long techLogId;
    private String profileImage;
    private String imageUrl;
    private boolean isDeleted;
-   private boolean isRead;
+   private boolean isPublic;
    private LocalDateTime createdAt;
 
    public static TechLogResponse from(TechLog techLog, User user) {
        return TechLogResponse.builder()
                .nickname(user.getNickname())
                .userId(user.getId())
+               .techLogId(techLog.getTechLogid())
                .profileImage(user.getProfile().getProfileImage()!=null ? user.getProfile().getProfileImage() : null)
                .imageUrl(techLog.getImageUrl())
                .isDeleted(techLog.isDeleted())
-               .isRead(techLog.isRead())
+               .isPublic(techLog.isPublic())
                .createdAt(techLog.getCreatedAt())
                .build();
    }
