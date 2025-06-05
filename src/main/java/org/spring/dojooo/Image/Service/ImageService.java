@@ -73,6 +73,7 @@ public class ImageService {
 
         if (imageType == TechLogImageType.THUMBNAIL) {
             TechLog techLog = getValidatedTechLog(techLogId, user);
+            techLog.updateTechLogThumbnailImageUrl(uploadedUrl);
             saveOrUpdateThumbnail(user, techLog, uploadedUrl);
         } else if (imageType == TechLogImageType.CONTENT) {
             saveContentImage(user, uploadedUrl); // TechLog 없이 저장

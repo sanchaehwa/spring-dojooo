@@ -52,12 +52,12 @@ public class TechLogService {
     }
     //작성한 글 수정
     @Transactional
-    public TechLog techLogEdit(Long userId, TechLogEditRequest techLogEditRequest, Authentication authentication) {
+    public TechLog techLogEdit(Long userId, Long techLogId, TechLogEditRequest techLogEditRequest, Authentication authentication) {
         //사용자 본인만 수정 가능하도록
         User user = getCurrentUser(userId, authentication);
         String title = techLogEditRequest.getTitle();
         //기존 글 찾고
-        TechLog techLog = techLogRepository.findByTechLogid(techLogEditRequest.getTechLogId())
+        TechLog techLog = techLogRepository.findByTechLogid(techLogId)
                 .orElseThrow(() -> new NotFoundTechLogException(ErrorCode.NOTFOUND_TECHLOG_EXCEPTION));
         if(techLogEditRequest.getTitle() != null && !techLogEditRequest.getTitle().isBlank() && !techLogEditRequest.getTitle().equals(techLog.getTitle())) {
             validateTitle(techLogEditRequest.getTitle(), techLog.getTechLogid());
@@ -86,15 +86,20 @@ public class TechLogService {
 
         TechLog techLog = techLogRepository.findByTechLogid(techLogdeleteRequest.getTechLogId())
                 .orElseThrow(() -> new NotFoundTechLogException(ErrorCode.NOTFOUND_TECHLOG_EXCEPTION));
-        String currentImageUrl = techLog.getImageUrl();
+        String thumbnailImageUrl= techLog.getThumbnailImageUrl();
+        String contentImageUrl = techLog.getContentImageUrl();
 
         //삭제 권한
         if(!techLog.getUser().getId().equals(user.getId())) {
             throw new NotUserEqualsCurrentUserException(ErrorCode.NOT_USER_EQUALS_CURRENTUSER);
         }
-        if (currentImageUrl != null && !currentImageUrl.isBlank()) {
-            s3FileService.deleteImageFromS3(currentImageUrl);
-        }        //soft delete
+        if (thumbnailImageUrl!= null && !thumbnailImageUrl.isBlank()) {
+            s3FileService.deleteImageFromS3(thumbnailImageUrl);
+        }
+        if(contentImageUrl != null && !contentImageUrl.isBlank()) {
+            s3FileService.deleteImageFromS3(contentImageUrl);
+        }
+            //soft delete
         techLog.changeIsDeleted(true);
         return techLog.getTechLogid();
     }

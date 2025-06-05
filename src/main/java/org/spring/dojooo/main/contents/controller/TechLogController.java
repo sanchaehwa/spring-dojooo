@@ -37,7 +37,16 @@ public class TechLogController {
 
         return ResponseEntity.ok(ApiResponse.of(200, "글이 조회되었습니다", response));
     }
+    @Operation(summary = "글 수정",description = "작성한 글을 수정합니다")
+    @PatchMapping("/{userId}/{techLogId}")
+    public ResponseEntity<ApiResponse<TechLogResponse>> editTechLog(@PathVariable Long userId, @PathVariable Long techLogId, @RequestBody TechLogEditRequest techLogEditRequest, Authentication authentication) {
 
+        TechLog editTechLog = techLogService.techLogEdit(userId, techLogId, techLogEditRequest,authentication);
+        TechLogResponse response = TechLogResponse.from(editTechLog, editTechLog.getUser());
+
+        return ResponseEntity.ok(ApiResponse.of(200, "글이 수정되었습니다", response));
+
+    }
 
     @Operation(summary = "공개 여부 설정", description = "글의 공개 여부를 설정합니다")
     @PatchMapping("/{userId}/{techLogId}/visibility")

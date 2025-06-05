@@ -9,5 +9,5 @@ public class TechLogTempRequest {
     private String tempId; // = tempUuid
     private String title;
     private String content;
-    private String imageUrl;
+    private String contentImageUrl;
 }
