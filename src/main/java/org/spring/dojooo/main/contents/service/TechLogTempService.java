@@ -30,7 +30,7 @@ public class TechLogTempService {
                 .tempId(tempUuid)
                 .title(request.getTitle())
                 .content(request.getContent())
-                .imageUrl(request.getImageUrl())
+                .contentImageUrl(request.getContentImageUrl())
                 .savedAt(LocalDateTime.now())
                 .build();
 

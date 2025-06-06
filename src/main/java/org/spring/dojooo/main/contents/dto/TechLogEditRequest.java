@@ -9,9 +9,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 public class TechLogEditRequest {
-    private Long techLogId;
     private String title;
     private String content;
+    private String thumbnailImageUrl;
+    private String contentImageUrl;
     private boolean isPublic;
     private LocalDateTime createdAt;
 }

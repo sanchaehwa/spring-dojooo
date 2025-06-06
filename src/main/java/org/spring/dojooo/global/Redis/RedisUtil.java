@@ -104,7 +104,7 @@ public class RedisUtil {
                     .techLogId(request.getTechLogId())
                     .title(request.getTitle())
                     .content(request.getContent())
-                    .imageUrl(request.getImageUrl())
+                    .contentImageUrl(request.getContentImageUrl())
                     .savedAt(request.getSavedAt())
                     .build();
         } catch (JsonProcessingException e) {

@@ -12,8 +12,9 @@ public class TechLogTempRedisDTO {
     private String techLogId; // String 타입
     private String title;
     private String content;
-    private String imageUrl;
+    private String contentImageUrl; //본문에 들어갈 사진만 임시저장
     private LocalDateTime savedAt;
+
     public void updateSavedAt(LocalDateTime now) {
         this.savedAt = now;
     }
@@ -23,7 +24,7 @@ public class TechLogTempRedisDTO {
                 .techLogId(this.techLogId)
                 .title(this.title)
                 .content(this.content)
-                .imageUrl(this.imageUrl)
+                .contentImageUrl(this.contentImageUrl)
                 .savedAt(LocalDateTime.now())
                 .build();
     }
