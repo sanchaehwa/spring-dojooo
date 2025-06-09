@@ -107,7 +107,7 @@ public class ImageService {
     }
 
     private TechLog getValidatedTechLog(Long techLogId, User user) {
-        return techLogRepository.findByTechLogidAndUser(techLogId, user)
+        return techLogRepository.findByTechLogidAndUserAndIsDeletedFalse(techLogId, user)
                 .orElseThrow(() -> new RuntimeException("TechLog을 찾을 수 없습니다."));
     }
 

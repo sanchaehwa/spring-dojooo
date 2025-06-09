@@ -1,6 +1,6 @@
 package org.spring.dojooo.main.contents.controller;
 
-import com.amazonaws.ResponseMetadata;
+
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -13,6 +13,8 @@ import org.spring.dojooo.main.contents.service.TechLogTempService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
@@ -28,8 +30,8 @@ public class TechLogController {
         TechLogResponse response =  TechLogResponse.from(saveTechLog.techLog(),saveTechLog.user());
         return ResponseEntity.ok(ApiResponse.of(200, "글이 저장되었습니다", response));
     }
-    @Operation(summary = "작성 글 조회", description = "작성한 글을 조회합니다")
-    @GetMapping("/{userId}/{techLogId}")
+    @Operation(summary = "작성 글 상세 조회", description = "작성한 글을 조회합니다")
+    @GetMapping("posts/{userId}/{techLogId}")
     public ResponseEntity<ApiResponse<TechLogResponse>> getTechLogDetail(@PathVariable Long userId, @PathVariable Long techLogId, Authentication authentication) {
 
         TechLog techLog = techLogService.loadTechLog(userId, techLogId, authentication);
@@ -37,6 +39,20 @@ public class TechLogController {
 
         return ResponseEntity.ok(ApiResponse.of(200, "글이 조회되었습니다", response));
     }
+    @Operation(summary = "본인이 작성한 글 전체 조회", description = "로그인한 사용자와 userId가 같은 경우 → 모든 TechLog (공개/비공개 포함) 조회")
+    @GetMapping("{userId}/posts")
+    public ResponseEntity<ApiResponse<List<TechLogLoadResponse>>> getMyTechLogs(@PathVariable Long userId, Authentication authentication) {
+        List<TechLogLoadResponse> techLogs = techLogService.findAllMyTechLogs(userId,authentication);
+        return ResponseEntity.ok(ApiResponse.of(200, "글이 조회되었습니다", techLogs));
+    }
+    @Operation(summary = "게시물 전체 조회",description = "DB에 저장되어있는 공개글을 모두 조회합니다")
+    @GetMapping("/posts")
+    public ResponseEntity<ApiResponse<List<TechLogLoadResponse>>> getAllTechLogs(){
+        List<TechLogLoadResponse> allTechLogs = techLogService.findAllTechLogs();
+        return ResponseEntity.ok(ApiResponse.of(200,"전체 글이 조회되었습니다",allTechLogs));
+
+    }
+
     @Operation(summary = "글 수정",description = "작성한 글을 수정합니다")
     @PatchMapping("/{userId}/{techLogId}")
     public ResponseEntity<ApiResponse<TechLogResponse>> editTechLog(@PathVariable Long userId, @PathVariable Long techLogId, @RequestBody TechLogEditRequest techLogEditRequest, Authentication authentication) {
