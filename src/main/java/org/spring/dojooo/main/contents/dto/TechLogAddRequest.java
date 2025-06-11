@@ -15,8 +15,9 @@ public class TechLogAddRequest {
     @NotBlank(message = "제목을 입력해주세요")
     private String title;
     private String content;
-    private String imageUrl;
-    private LocalDateTime createDate;
+    private String thumbnailImageUrl;
+    private String contentImageUrl;
+    private LocalDateTime createdAt;
     @NotNull(message = "공개여부를 설정해주세요")
     private boolean isPublic;
 
@@ -25,7 +26,8 @@ public class TechLogAddRequest {
                 .user(user)
                 .title(title)
                 .content(content)
-                .imageUrl(imageUrl)
+                .thumbnailImageUrl(thumbnailImageUrl)
+                .contentImageUrl(contentImageUrl)
                 .createdAt(LocalDateTime.now())
                 .isPublic(isPublic)
                 .build();

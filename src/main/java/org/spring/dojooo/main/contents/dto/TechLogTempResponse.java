@@ -13,7 +13,7 @@ public class TechLogTempResponse {
     private String techLogId; //새글이면 Null
     private String title;
     private String content;
-    private String imageUrl;
+    private String contentImageUrl;
     private LocalDateTime savedAt;
 
 }

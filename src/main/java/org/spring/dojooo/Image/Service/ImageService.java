@@ -73,6 +73,7 @@ public class ImageService {
 
         if (imageType == TechLogImageType.THUMBNAIL) {
             TechLog techLog = getValidatedTechLog(techLogId, user);
+            techLog.updateTechLogThumbnailImageUrl(uploadedUrl);
             saveOrUpdateThumbnail(user, techLog, uploadedUrl);
         } else if (imageType == TechLogImageType.CONTENT) {
             saveContentImage(user, uploadedUrl); // TechLog 없이 저장
@@ -106,7 +107,7 @@ public class ImageService {
     }
 
     private TechLog getValidatedTechLog(Long techLogId, User user) {
-        return techLogRepository.findByTechLogidAndUser(techLogId, user)
+        return techLogRepository.findByTechLogidAndUserAndIsDeletedFalse(techLogId, user)
                 .orElseThrow(() -> new RuntimeException("TechLog을 찾을 수 없습니다."));
     }
 
