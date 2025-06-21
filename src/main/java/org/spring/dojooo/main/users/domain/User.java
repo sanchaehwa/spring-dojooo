@@ -3,6 +3,7 @@ package org.spring.dojooo.main.users.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import org.spring.dojooo.global.ErrorCode;
+import org.spring.dojooo.main.follow.domain.Follow;
 import org.spring.dojooo.main.users.dto.UserUpdateRequest;
 import org.spring.dojooo.main.users.exception.IllegalArgumentException;
 import org.spring.dojooo.main.users.model.Role;
@@ -48,8 +49,14 @@ public class User {
     @Embedded
     private Profile profile;
 
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "user",orphanRemoval = true) //프로필 테그를 삭제하면 프로필에서도 자동 삭제
     private List<ProfileTag> profileTags = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL,mappedBy="following")
+    private List<Follow> followingList= new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "follower")
+    private List<Follow> followeeList= new ArrayList<>();
 
     //프로필 이미지 등록하지않아도, 기본이미지가 보이게, 프로필 이미지 새로등록하면 기본이미지에서 바뀌는 로직으로
     private static final String DEFAULT_PROFILE_IMAGE = "https://dojooo.s3.ap-northeast-2.amazonaws.com/profile/80aefad7-3_기본프로필.jpg";
@@ -107,7 +114,9 @@ public class User {
 
     //프로필 업로드
     public void updateProfile(Profile profile) {
-        this.profile = profile;
+        if(profile != null){
+            this.profile = profile;
+        }
     }
 
     public List<String> getVisibleProfileTagNames() {
@@ -122,5 +131,14 @@ public class User {
         // 양방향 연관관계 설정
         tag.setUserInternal(this); // private 메서드에서만 user 세팅
     }
+    public void addFollow(Follow follow) {
+        this.followingList.add(follow);
+        follow.addFollowing(this);
+    }
+    public void addFollower(Follow follow) {
+        this.followeeList.add(follow);
+        follow.addFollower(this);
+    }
+
 
 }

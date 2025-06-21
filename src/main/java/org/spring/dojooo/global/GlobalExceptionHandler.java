@@ -2,10 +2,7 @@ package org.spring.dojooo.global;
 
 import lombok.extern.slf4j.Slf4j;
 import org.spring.dojooo.auth.jwt.exception.InvalidTokenException;
-import org.spring.dojooo.global.exception.ApiException;
-import org.spring.dojooo.global.exception.DuplicateException;
-import org.spring.dojooo.global.exception.NotFoundException;
-import org.spring.dojooo.global.exception.S3Exception;
+import org.spring.dojooo.global.exception.*;
 import org.spring.dojooo.main.contents.exception.DuplicateTechLogTitleException;
 import org.spring.dojooo.main.contents.exception.NotFoundTaskException;
 import org.spring.dojooo.main.contents.exception.NotFoundTechLogException;
@@ -57,11 +54,15 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({DuplicateUserException.class, DuplicateTagException.class, DuplicateTechLogTitleException.class})
+    @ExceptionHandler(DuplicateException.class)
     public ResponseEntity<ErrorResponse> handleDuplicateException(DuplicateException exception) {
-        log.error("handleDuplicateUserException", exception);
-        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.CONFLICT_ERROR);
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        ErrorCode errorCode = exception.getErrorCode(); // BusinessException에서 상속받은 것
+        ErrorResponse errorResponse = ErrorResponse.of(errorCode);
+        HttpStatus httpStatus = HttpStatus.resolve(errorCode.getStatus());
+        if (httpStatus == null) {
+            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        return new ResponseEntity<>(errorResponse,httpStatus);
     }
     @ExceptionHandler(InvalidTokenException.class)
     public ResponseEntity<ErrorResponse> handleInvalidToken(InvalidTokenException exception) {
@@ -104,6 +105,17 @@ public class GlobalExceptionHandler {
         log.error("handleWrongEditChecklistException", exception);
         ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.WRONG_EDIT_CHECKLIST_EXCEPTION);
         return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+    }
+    @ExceptionHandler(InvalidRequestException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidRequestException(InvalidRequestException exception){
+        log.error("handleInvalidRequestException", exception);
+        ErrorCode errorCode = exception.getErrorCode();
+        ErrorResponse errorResponse = ErrorResponse.of(errorCode);
+        HttpStatus httpStatus = HttpStatus.resolve(errorCode.getStatus());
+        if (httpStatus == null) {
+            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        return new ResponseEntity<>(errorResponse, httpStatus);
     }
 
 }
