@@ -42,8 +42,8 @@ public class UserProfileService {
         Long currentUserId = getCurrentUserId(authentication);
         User user = findUserById(userId);
         boolean isOwner = currentUserId.equals(userId);
-        int followerCount = followRepository.countByFollower(user);
-        int followingCount = followRepository.countByFollowing(user);
+        int followerCount = followRepository.countByToUser(user);
+        int followingCount = followRepository.countByFromUser(user);
         return ProfileDetails.of(user, isOwner,followerCount,followingCount);
     }
 

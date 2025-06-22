@@ -52,11 +52,11 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "user",orphanRemoval = true) //프로필 테그를 삭제하면 프로필에서도 자동 삭제
     private List<ProfileTag> profileTags = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL,mappedBy="following")
-    private List<Follow> followingList= new ArrayList<>();
+    @OneToMany(mappedBy = "fromUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Follow> followingList = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "follower")
-    private List<Follow> followeeList= new ArrayList<>();
+    @OneToMany(mappedBy = "toUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Follow> followerList = new ArrayList<>();
 
     //프로필 이미지 등록하지않아도, 기본이미지가 보이게, 프로필 이미지 새로등록하면 기본이미지에서 바뀌는 로직으로
     private static final String DEFAULT_PROFILE_IMAGE = "https://dojooo.s3.ap-northeast-2.amazonaws.com/profile/80aefad7-3_기본프로필.jpg";
@@ -131,14 +131,14 @@ public class User {
         // 양방향 연관관계 설정
         tag.setUserInternal(this); // private 메서드에서만 user 세팅
     }
-    public void addFollow(Follow follow) {
+    public void addFollowing(Follow follow) {
         this.followingList.add(follow);
-        follow.addFollowing(this);
+        follow.setFromUser(this);
     }
+
     public void addFollower(Follow follow) {
-        this.followeeList.add(follow);
-        follow.addFollower(this);
-    }
+        this.followerList.add(follow);
+        follow.setToUser(this);
+    }}
 
 
-}

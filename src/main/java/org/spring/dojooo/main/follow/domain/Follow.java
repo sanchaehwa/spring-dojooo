@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 @Table(name = "follows", uniqueConstraints = @UniqueConstraint(columnNames = {"follower_id", "following_id"}))
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder
 public class Follow {
 
     @Id
@@ -19,22 +18,34 @@ public class Follow {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name= "follower_id", nullable = false)
-    private User follower;
-
+    @JoinColumn(name= "from_user_id")
+    private User fromUser;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "following_id", nullable = false)
-    private User following;
+    @JoinColumn(name = "to_user_id")
+    private User toUser;
 
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    public void addFollower(User follower) {
-        this.follower = follower;
+    @PrePersist
+    public void prePersist() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
     }
-    public void addFollowing(User following) {
-        this.following = following;
+    @Builder
+    public Follow(User fromUser, User toUser){
+        this.fromUser = fromUser;
+        this.toUser = toUser;
+        this.createdAt = LocalDateTime.now();
+    }
+    public void setFromUser(User user) {
+        this.fromUser = user;
+    }
+
+    public void setToUser(User user) {
+        this.toUser = user;
     }
 
 
