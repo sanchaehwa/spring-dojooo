@@ -6,6 +6,7 @@ import org.spring.dojooo.auth.jwt.dto.CustomUserDetails;
 import org.spring.dojooo.global.ErrorCode;
 import org.spring.dojooo.global.S3.S3FileService;
 import org.spring.dojooo.global.exception.NotFoundException;
+import org.spring.dojooo.main.follow.repository.FollowRepository;
 import org.spring.dojooo.main.users.exception.*;
 import org.spring.dojooo.main.users.domain.Profile;
 import org.spring.dojooo.main.users.domain.ProfileTag;
@@ -33,6 +34,7 @@ public class UserProfileService {
     private static final String DEFAULT_PROFILE_IMAGE = "https://dojooo.s3.ap-northeast-2.amazonaws.com/profile/80aefad7-3_%E1%84%80%E1%85%B5%E1%84%87%E1%85%A9%E1%86%AB%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%91%E1%85%B5%E1%86%AF.jpg";
     private final S3FileService s3FileService;
     private final ProfileTagRepository profileTagRepository;
+    private final FollowRepository followRepository;
 
     // 프로필 조회
     @Transactional(readOnly = true)
@@ -40,7 +42,9 @@ public class UserProfileService {
         Long currentUserId = getCurrentUserId(authentication);
         User user = findUserById(userId);
         boolean isOwner = currentUserId.equals(userId);
-        return ProfileDetails.of(user, isOwner);
+        int followerCount = followRepository.countByToUser(user);
+        int followingCount = followRepository.countByFromUser(user);
+        return ProfileDetails.of(user, isOwner,followerCount,followingCount);
     }
 
     // 프로필 수정

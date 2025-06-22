@@ -17,8 +17,10 @@ public class ProfileDetails {
     private Boolean isMine;
     private static final String DEFAULT_PROFILE_IMAGE = "https://dojooo.s3.ap-northeast-2.amazonaws.com/profile/80aefad7-3_%E1%84%80%E1%85%B5%E1%84%87%E1%85%A9%E1%86%AB%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%91%E1%85%B5%E1%86%AF.jpg";
     private List<String> tags;
+    private int followerCount;
+    private int followingCount;
 
-    public static ProfileDetails of(User user, boolean isOwner) {
+    public static ProfileDetails of(User user, boolean isOwner,int followerCount, int followingCount) {
         Profile profile = user.getProfile();
         String profileImage = (profile != null && profile.getProfileImage() != null && !profile.getProfileImage().isBlank())
                 ? profile.getProfileImage()
@@ -34,8 +36,10 @@ public class ProfileDetails {
                 .nickname(user.getNickname())
                 .introduction(introduction)
                 .tags(user.getVisibleProfileTagNames())
+                .followerCount(followerCount) //팔로우수
+                .followingCount(followingCount) //팔로워수
                 .isMine(isOwner)
                 .build();
-    }
+        }
     }
 

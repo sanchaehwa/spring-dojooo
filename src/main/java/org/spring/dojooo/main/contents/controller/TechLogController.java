@@ -10,6 +10,8 @@ import org.spring.dojooo.main.contents.domain.TechLog;
 import org.spring.dojooo.main.contents.dto.*;
 import org.spring.dojooo.main.contents.service.TechLogService;
 import org.spring.dojooo.main.contents.service.TechLogTempService;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -41,13 +43,13 @@ public class TechLogController {
     }
     @Operation(summary = "본인이 작성한 글 전체 조회", description = "로그인한 사용자와 userId가 같은 경우 → 모든 TechLog (공개/비공개 포함) 조회")
     @GetMapping("{userId}/posts")
-    public ResponseEntity<ApiResponse<List<TechLogLoadResponse>>> getMyTechLogs(@PathVariable Long userId, Authentication authentication) {
+    public ResponseEntity<ApiResponse<List<TechLogLoadResponse>>> getMyTechLogs(@PathVariable Long userId, @PageableDefault(size=10) Pageable pageable, Authentication authentication) {
         List<TechLogLoadResponse> techLogs = techLogService.findAllMyTechLogs(userId,authentication);
         return ResponseEntity.ok(ApiResponse.of(200, "글이 조회되었습니다", techLogs));
     }
     @Operation(summary = "게시물 전체 조회",description = "DB에 저장되어있는 공개글을 모두 조회합니다")
     @GetMapping("/posts")
-    public ResponseEntity<ApiResponse<List<TechLogLoadResponse>>> getAllTechLogs(){
+    public ResponseEntity<ApiResponse<List<TechLogLoadResponse>>> getAllTechLogs(@PageableDefault(size = 10) Pageable pageable) {
         List<TechLogLoadResponse> allTechLogs = techLogService.findAllTechLogs();
         return ResponseEntity.ok(ApiResponse.of(200,"전체 글이 조회되었습니다",allTechLogs));
 
