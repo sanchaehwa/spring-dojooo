@@ -25,6 +25,11 @@ public class ChatMessage {
     @Enumerated(EnumType.STRING)
     private MessageType messageType;
 
+    @PrePersist
+    protected void onCreate() {
+        this.sendAt = LocalDateTime.now();
+    }
+
     @Builder
     public ChatMessage(Long senderId, Long roomId, String senderName, String message, MessageType messageType) {
         this.senderId = senderId;
